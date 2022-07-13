@@ -1,0 +1,40 @@
+import numpy as np
+from sympy import pi
+import FDCT
+import Quantization
+rows=256
+cols=256
+channels =1
+i = 0
+w = 32
+
+img=np.fromfile(r'lena', dtype='uint8')
+img=img.reshape(rows, cols, channels)
+
+img = np.transpose(img) 
+img1 = np.split(img, w, axis=1)
+
+img3 = [[[[0 for k1 in range(w)] for k2 in range(w)] for k3 in range(w)] for k4 in range(w)]
+
+for i in range(w):
+    img2 = np.dsplit(img1[i], w)
+
+    for j in range(w):
+        img3[i][j] = img2[j]
+
+for i in range(w):
+    for j in range(w):
+        img3[i][j] = FDCT.FDCT_for_gray(img3[i][j])
+
+'''
+for i in range(w):
+    for j in range(w):
+        img3[i][j] = Quantization.Quan(img3[i][j])
+        print(img3[i][j])
+'''
+#for i in range(w):
+
+
+#FDCT.FDCT_for_gray(img2[1])
+#img2[1] = np.array(img2[1])
+#print (img2[1])
