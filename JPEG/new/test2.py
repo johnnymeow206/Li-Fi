@@ -2,6 +2,8 @@ from PIL import Image
 import numpy as np
 from sympy import cos, pi
 import FDCT
+import cv2
+import Def
 
 rows=256
 cols=256
@@ -21,7 +23,8 @@ img1[0] = np.transpose(img1[0])
 img2 = np.split(img1[0], 32)
 img2[0] = np.transpose(img2[0])
 print(img2[0])
-
+img2y = np.asmatrix(img2[0])
+'''
 def FDCT_for_gray(img):
     N = 8
     img2 = img
@@ -42,18 +45,16 @@ def FDCT_for_gray(img):
     return img2
 print(FDCT_for_gray(img2[0]))
 '''
-for i in range(32):
-    print(np.transpose(img2[0]))
-
-for i in range(32):
-    
-    img2 = np.dsplit(img1[i], 32)
-    print(img2[i])
-    print("number of i =",i)
-
+img2y = img2y - np.ones((8,8))*128
+dct_img = cv2.dct(img2y)
+print(dct_img)
 '''
-
-#FDCT.FDCT_for_gray(img2[1])
-#img2[1] = np.array(img2[1])
-#print (img2[1])
+idct_img = cv2.idct(dct_img)
+print(idct_img)
+'''
+Quan_img = Def.quan(dct_img)
+for x in range(8):
+    for y in range(8):
+        Quan_img[x,y] = round(Quan_img[x,y])
+print(Quan_img)
 
