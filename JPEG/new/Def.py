@@ -1,3 +1,4 @@
+from ctypes import sizeof
 import numpy as np
 from sympy import cos, pi
 import cv2
@@ -31,42 +32,38 @@ def iquan(img):
             img[x,y] = img[x,y]*iquan[x,y]
     return img
 def zigzag(img):
-    Z = np.zeros((1, 64))
-    z, c, d = 0, 0, 0
-    while z < 64:
-        while c == 0 and d == 0:
-            Z[0,z] = img[c,d]
-            print(Z[0,z])
-        while c == 0 or d == 7:
-            d += 1
-            Z[0,z] = img[c,d]
-            print(Z[0,z])
-            z+=1
-            c+=1
-            d-=1
-            Z[0,z] = img[c,d]
-            print(Z[0,z])
-            z+=1
-            if d != 0:
-                c+=1
-                d-=1
-                Z[0,z] = img[c,d]
-                print(Z[0,z])
-                z+=1
-        while d == 0 or c == 7:
-            c+=1
-            Z[0,z] = img[c,d]
-            print(Z[0,z])
-            z+=1
-            c-=1
-            d+=1
-            Z[0,z] = img[c,d]
-            print(Z[0,z])
-            z+=1
-            if c != 0:
-                c-=1
-                d+=1
-                Z[0,z] = img[c,d]
-                print(Z[0,z])
-                z+=1
+    x = y = z = 0
+    X = np.array([0,0,1,2,1,0,0,1,2,3,4,3,2,1,0,0,
+                1,2,3,4,5,6,5,4,3,2,1,0,0,1,2,3,
+                4,5,6,7,7,6,5,4,3,2,1,2,3,4,5,6,
+                7,7,6,5,4,3,4,5,6,7,7,6,5,6,7,7])
+    Y = np.array([0,1,0,0,1,2,3,2,1,0,0,1,2,3,4,5,
+                4,3,2,1,0,0,1,2,3,4,5,6,7,6,5,4,
+                3,2,1,0,1,2,3,4,5,6,7,7,6,5,4,3,
+                2,3,4,5,6,7,7,6,5,4,5,6,7,7,6,7])
+    Z = np.zeros((64))
+    for i in range(64): 
+            Z[z] = img[X[i],Y[i]]
+            z += 1
     return Z
+def izigzag(Z):
+    x = y = z = 0
+    X = np.array([0,0,1,2,1,0,0,1,2,3,4,3,2,1,0,0,
+                1,2,3,4,5,6,5,4,3,2,1,0,0,1,2,3,
+                4,5,6,7,7,6,5,4,3,2,1,2,3,4,5,6,
+                7,7,6,5,4,3,4,5,6,7,7,6,5,6,7,7])
+    Y = np.array([0,1,0,0,1,2,3,2,1,0,0,1,2,3,4,5,
+                4,3,2,1,0,0,1,2,3,4,5,6,7,6,5,4,
+                3,2,1,0,1,2,3,4,5,6,7,7,6,5,4,3,
+                2,3,4,5,6,7,7,6,5,4,5,6,7,7,6,7])
+    img = np.zeros((8,8))
+    for i in range(64): 
+            img[X[i],Y[i]] = Z[z]
+            z += 1
+    return img
+'''
+def RLE(Z):
+    temp = np.array([2][16])
+    for a in range(64):
+        temp[1,a] =  
+'''

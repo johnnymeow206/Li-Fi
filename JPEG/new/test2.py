@@ -24,27 +24,7 @@ img2 = np.split(img1[0], 32)
 img2[0] = np.transpose(img2[0])
 print(img2[0])
 img2y = np.asmatrix(img2[0])
-'''
-def FDCT_for_gray(img):
-    N = 8
-    img2 = img
-    img2 = np.asmatrix(img2)
-    img2 = img2 - np.ones((8,8))*128
-    sum = 0
-    for u in range(8):
-        for  v in range(8):   
-            for x in range(8):
-                for  y in range(8):    
-                    if u == 0 and v == 0:
-                        cucv = 1/1.414
-                    else:
-                        cucv = 1
-                    sum += (2*cucv/N)*(img2[x,y]*cos(((2*x+1)*u*pi.evalf())/(2*N))*cos(((2*y+1)*v*pi.evalf())/(2*N)))
-            img2[u,v] =sum
-            sum = 0
-    return img2
-print(FDCT_for_gray(img2[0]))
-'''
+
 img2y = img2y - np.ones((8,8))*128
 dct_img = cv2.dct(img2y)
 print(dct_img)
@@ -57,4 +37,24 @@ for x in range(8):
     for y in range(8):
         Quan_img[x,y] = round(Quan_img[x,y])
 print(Quan_img)
+zig = np.asmatrix(Quan_img)
+Zig_img = Def.zigzag(zig)
+print(Zig_img)
+
+temp = np.zeros([64,2])
+a = b = c = 0
+while a < 64:
+    if Zig_img[a]!=0:
+        temp[b] = [0,Zig_img[a]]
+        if Zig_img[a-1]==0:
+            temp[b] = [c,Zig_img[a]]
+            c = 0
+        b+=1
+    elif Zig_img[a]==0:
+        c+=1
+    a+=1
+RLE = np.resize(temp,(b,2))
+print(temp)
+
+
 

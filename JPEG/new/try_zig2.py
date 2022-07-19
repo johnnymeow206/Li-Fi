@@ -32,6 +32,7 @@ def izigzag(Z):
             img[X[i],Y[i]] = Z[z]
             z += 1
     return img
+
 zig = np.array([[0,1,5,6,14,15,27,28],
                 [2,4,7,13,16,26,29,42],
                 [3,8,12,17,25,30,41,43],
@@ -44,5 +45,24 @@ zig = np.asmatrix(zig)
 Zig_img = zigzag(zig)
 print(Zig_img)
 iZig_img = izigzag(Zig_img)
-print(iZig_img)
-
+#print(iZig_img)
+def RLE(Z):
+    temp = np.zeros([8,2], dtype=int)
+    '''
+    for a in range(64):
+        temp[1,a] = 
+    #return  
+    '''
+temp = np.zeros([64,2])
+a = b = c = 0
+while a < 64:
+    if Zig_img[a]!=0:
+        temp[b] = [0,Zig_img[a]]
+        if Zig_img[a-1]==0:
+            temp[b] = [c,Zig_img[a]]
+        b+=1
+    elif Zig_img[a]==0:
+        c+=1
+    a+=1
+RLE = np.resize(temp,(b,2))
+print(temp)
