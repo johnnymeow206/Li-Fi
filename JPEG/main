@@ -1,7 +1,7 @@
 import numpy as np
 from sympy import pi
+import cv2
 import FDCT
-import Quantization
 rows=256
 cols=256
 channels =1
@@ -21,10 +21,16 @@ for i in range(w):
 
     for j in range(w):
         img3[i][j] = img2[j]
+#img3 = resized_image.astype(np.float32)
+
 
 for i in range(w):
     for j in range(w):
-        img3[i][j] = FDCT.FDCT_for_gray(img3[i][j])
+        img4 = np.asmatrix(img3[i][j])
+        img4 = img4.astype(np.float32)
+        img4 -= 128*np.ones((8,8))
+        img4 = cv2.dct(img4)
+        img3[i][j] = img4
 
 '''
 for i in range(w):
