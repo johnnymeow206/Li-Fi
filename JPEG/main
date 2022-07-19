@@ -37,24 +37,11 @@ for i in range(w):
 for i in range(w):
     for j in range(w):
 
-        img3[i][j] = Def.Quan(img3[i][j])
+        img3[i][j] = Def.quan(img3[i][j])
 
         for k in range(8):
             for l in range(8):
                 img3[i][j][k][l] = round(img3[i][j][k][l])
-'''
-r=0
-for i in range(w):
-    for j in range(w):
-        for k in range(8):
-            for l in range(8):
-                r=img3[i][j][k][l]
-                img3[i][j][k][l] = np.array([r,r,r])
-         '''       
-                
-print(img3[1][1][1][1])
+        img3[i][j] = Def.zigzag(img3[i][j])
+        print (img3[i][j])
 
-
-#FDCT.FDCT_for_gray(img2[1])
-#img2[1] = np.array(img2[1])
-#print (img2[1])
