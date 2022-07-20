@@ -42,6 +42,10 @@ for i in range(w):
         for k in range(8):
             for l in range(8):
                 img3[i][j][k][l] = round(img3[i][j][k][l])
+        
         img3[i][j] = Def.zigzag(img3[i][j])
-        print (img3[i][j])
+        print(img3[i][j])
+        img3[i][j] = Def.RLE(img3[i][j])
+        print(img3[i][j])
+
 
