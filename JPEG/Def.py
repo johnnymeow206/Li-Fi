@@ -1,6 +1,7 @@
 import numpy as np
-from sympy import cos, pi
-import cv2
+from sympy import pi
+
+
 
 def quan(img):
     quan =np.array([[16,11,10,16,24,40,51,61],
@@ -30,3 +31,50 @@ def iquan(img):
         for y in range(8):
             img[x,y] = img[x,y]*iquan[x,y]
     return img
+def zigzag(img):
+    x = y = z = 0
+    X = np.array([0,0,1,2,1,0,0,1,2,3,4,3,2,1,0,0,
+                1,2,3,4,5,6,5,4,3,2,1,0,0,1,2,3,
+                4,5,6,7,7,6,5,4,3,2,1,2,3,4,5,6,
+                7,7,6,5,4,3,4,5,6,7,7,6,5,6,7,7])
+    Y = np.array([0,1,0,0,1,2,3,2,1,0,0,1,2,3,4,5,
+                4,3,2,1,0,0,1,2,3,4,5,6,7,6,5,4,
+                3,2,1,0,1,2,3,4,5,6,7,7,6,5,4,3,
+                2,3,4,5,6,7,7,6,5,4,5,6,7,7,6,7])
+    Z = np.zeros((64))
+    for i in range(64): 
+            Z[z] = img[X[i],Y[i]]
+            z += 1
+    return Z
+def izigzag(Z):
+    x = y = z = 0
+    X = np.array([0,0,1,2,1,0,0,1,2,3,4,3,2,1,0,0,
+                1,2,3,4,5,6,5,4,3,2,1,0,0,1,2,3,
+                4,5,6,7,7,6,5,4,3,2,1,2,3,4,5,6,
+                7,7,6,5,4,3,4,5,6,7,7,6,5,6,7,7])
+    Y = np.array([0,1,0,0,1,2,3,2,1,0,0,1,2,3,4,5,
+                4,3,2,1,0,0,1,2,3,4,5,6,7,6,5,4,
+                3,2,1,0,1,2,3,4,5,6,7,7,6,5,4,3,
+                2,3,4,5,6,7,7,6,5,4,5,6,7,7,6,7])
+    img = np.zeros((8,8))
+    for i in range(64): 
+            img[X[i],Y[i]] = Z[z]
+            z += 1
+    return img
+
+def RLE(array1):
+    array2 = array1
+    array3 = [int(array2[0])]
+    k = 0
+
+    for i in range (63):   
+        if array2[i+1] == 0:
+            k += 1
+            if  i+1 == 63:
+                array3.append("EOB")
+                break
+        else:
+            array3.append([k,int(array2[i+1])])
+            k = 0
+    return array3
+        
