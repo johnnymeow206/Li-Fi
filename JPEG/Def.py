@@ -62,7 +62,7 @@ def izigzag(Z):
             z += 1
     return img
 
-def RLE(array1):
+def RLE_AC(array1):
     array2 = array1
     array3 = [int(array2[0])]
     k = 0
@@ -77,4 +77,16 @@ def RLE(array1):
             array3.append([k,int(array2[i+1])])
             k = 0
     return array3
-        
+
+def InvRLE_AC(array1):
+    array2 = array1
+    array3 = [array2[0]]
+    i = 1
+
+    while array2[i][0] != 'E':
+            array3.extend([0]*int(array2[i][0]))
+            array3.append(array2[i][1])
+            i += 1
+    
+    array3.extend([0]*(64 - len(array3)))
+    return array3
