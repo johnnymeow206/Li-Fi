@@ -1,7 +1,45 @@
-from ctypes import sizeof
 import numpy as np
-from sympy import cos, pi
-import cv2
+from sympy import cos
+
+def FDCT_for_gray(img):
+    img2 = img
+    img_DCT = img
+    img2 = np.asmatrix(img2)
+    img2 = img2 - np.ones((8,8))*128
+    sum = 0
+    pi = 3.14159
+    for u in range(8):
+        for  v in range(8):   
+            for x in range(8):
+                for y in range(8):    
+                    if u == 0 and v == 0:
+                        cucv = 1/2
+                    else:
+                        cucv = 1
+                    sum += (cucv/4)*(img2[x,y]*cos(((2*x+1)*u*pi)/16)*cos(((2*y+1)*v*pi)/16))
+            img_DCT[u,v] = sum
+            sum = 0
+    return img_DCT
+def iFDCT_for_gray(img_iDCT0):
+    img_iDCT1 = img_iDCT0
+    img_iDCT1 = np.asmatrix(img_iDCT1)
+    img_iDCT = np.zeros((8,8))
+    img_iDCT = np.asmatrix(img_iDCT)
+    sum = 0
+    pi = 3.14159
+    for x in range(8):
+        for  y in range(8):   
+            for u in range(8):
+                for v in range(8):    
+                    if u == 0 and v == 0:
+                        cucv = 1/2
+                    else:
+                        cucv = 1
+                    sum += (cucv)*(img_iDCT1[u,v]*cos(((2*x+1)*u*pi)/16)*cos(((2*y+1)*v*pi)/16))     
+            img_iDCT[x,y] = sum/4
+            sum = 0
+    img_iDCT = img_iDCT + np.ones((8,8))*128
+    return img_iDCT
 
 def quan(img):
     quan =np.array([[16,11,10,16,24,40,51,61],
@@ -18,19 +56,20 @@ def quan(img):
             img[x,y] = img[x,y]/quan[x,y]
     return img
 def iquan(img):
+    img_iquan = np.ones((8,8))
     iquan =np.array([[16,11,10,16,24,40,51,61],
-                [12,12,14,19,26,58,60,55],
-                [14,13,16,24,40,57,69,56],
-                [14,17,22,19,51,87,80,62],
-                [18,22,37,56,68,109,103,77],
-                [24,35,55,64,81,104,113,92],
-                [49,64,78,87,103,121,120,101],
-                [72,92,95,98,112,100,103,99]])
+                    [12,12,14,19,26,58,60,55],
+                    [14,13,16,24,40,57,69,56],
+                    [14,17,22,19,51,87,80,62],
+                    [18,22,37,56,68,109,103,77],
+                    [24,35,55,64,81,104,113,92],
+                    [49,64,78,87,103,121,120,101],
+                    [72,92,95,98,112,100,103,99]])
     iquan = np.asmatrix(iquan)
     for x in range(8):
         for y in range(8):
-            img[x,y] = img[x,y]*iquan[x,y]
-    return img
+            img_iquan[x,y] = img[x,y]*iquan[x,y]
+    return img_iquan
 def zigzag(img):
     x = y = z = 0
     X = np.array([0,0,1,2,1,0,0,1,2,3,4,3,2,1,0,0,
@@ -61,9 +100,32 @@ def izigzag(Z):
             img[X[i],Y[i]] = Z[z]
             z += 1
     return img
-'''
-def RLE(Z):
-    temp = np.array([2][16])
-    for a in range(64):
-        temp[1,a] =  
-'''
+
+def RLE_AC(array1):
+    array2 = array1
+    array3 = [int(array2[0])]
+    k = 0
+
+    for i in range (63):   
+        if array2[i+1] == 0:
+            k += 1
+            if  i+1 == 63:
+                array3.append("EOB")
+                break
+        else:
+            array3.append([k,int(array2[i+1])])
+            k = 0
+    return array3
+
+def InvRLE_AC(array1):
+    array2 = array1
+    array3 = [array2[0]]
+    i = 1
+
+    while array2[i][0] != 'E':
+            array3.extend([0]*int(array2[i][0]))
+            array3.append(array2[i][1])
+            i += 1
+    
+    array3.extend([0]*(64 - len(array3)))
+    return array3
