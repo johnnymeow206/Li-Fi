@@ -70,7 +70,7 @@ for i in range(w):
     pre_last = img3[count[31]][i][0]
     for j in range(w):
         img3[count[j]][i][0] = diff[j]
-        print(img3[i][j])
+        print(img3[j][i])
     
     if i%2 == 0:
         count = sorted(count)
