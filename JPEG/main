@@ -8,6 +8,11 @@ channels =1
 i = 0
 w = 32
 
+count = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+        31]
+
 
 img=np.fromfile(r'lena', dtype='uint8')
 img=img.reshape(rows, cols, channels)
@@ -44,8 +49,30 @@ for i in range(w):
                 img3[i][j][k][l] = round(img3[i][j][k][l])
         
         img3[i][j] = Def.zigzag(img3[i][j])
-        print(img3[i][j])
-        img3[i][j] = Def.RLE(img3[i][j])
-        print(img3[i][j])
+        #print(img3[i][j])
+        img3[i][j] = Def.RLE_AC(img3[i][j])
+        print(img3[i][j][0])
 
 
+pre_last = 0
+for i in range(w):
+    diff = []
+
+    for j in range(w):
+        if j != 0:
+            #diff.extend(Def.gap12(img3[count[k]][i][0],img3[count[k-1]][i][0]))
+            diff.append(img3[count[j]][i][0]-img3[count[j-1]][i][0])
+ 
+        else:
+            #diff.append(Def.gap12(img3[count[k]][i][0],pre_last))
+            diff.append(img3[count[j]][i][0]-pre_last)
+
+    pre_last = img3[count[31]][i][0]
+    for j in range(w):
+        img3[count[j]][i][0] = diff[j]
+        print(img3[i][j])
+    
+    if i%2 == 0:
+        count = sorted(count)
+    else:
+        count = sorted(count,reverse = True)
