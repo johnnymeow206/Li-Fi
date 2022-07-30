@@ -36,7 +36,10 @@ def Huff(array1):
     temp = array1
     diff = temp[0]
     diff = int_to_bin(diff)
-    temp[0] =  DC_Huff[len(diff)] + diff
+    if diff == 0:
+        temp[0] =  DC_Huff[0] + diff
+    else:
+        temp[0] =  DC_Huff[len(diff)] + diff
     i = 1
     while temp[i][0] != 'E':
         temp02 = int_to_bin(temp[i][1])
