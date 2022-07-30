@@ -2,6 +2,7 @@ import numpy as np
 from sympy import pi
 import cv2
 import Def
+import Def2
 rows=256
 cols=256
 channels =1
@@ -36,23 +37,17 @@ for i in range(w):
         img4 = img4.astype(np.float32)
         img4 -= 128*np.ones((8,8))
         img4 = cv2.dct(img4)
+
         img3[i][j] = img4
-
-
-for i in range(w):
-    for j in range(w):
-
         img3[i][j] = Def.quan(img3[i][j])
 
         for k in range(8):
             for l in range(8):
                 img3[i][j][k][l] = round(img3[i][j][k][l])
-        
-        img3[i][j] = Def.zigzag(img3[i][j])
-        #print(img3[i][j])
-        img3[i][j] = Def.RLE_AC(img3[i][j])
-        print(img3[i][j][0])
 
+        img3[i][j] = Def.zigzag(img3[i][j])
+        img3[i][j] = Def.RLE_AC(img3[i][j])
+        #print(img3[i][j])
 
 pre_last = 0
 for i in range(w):
@@ -60,19 +55,22 @@ for i in range(w):
 
     for j in range(w):
         if j != 0:
-            #diff.extend(Def.gap12(img3[count[k]][i][0],img3[count[k-1]][i][0]))
             diff.append(img3[count[j]][i][0]-img3[count[j-1]][i][0])
  
         else:
-            #diff.append(Def.gap12(img3[count[k]][i][0],pre_last))
             diff.append(img3[count[j]][i][0]-pre_last)
 
     pre_last = img3[count[31]][i][0]
     for j in range(w):
         img3[count[j]][i][0] = diff[j]
-        print(img3[j][i])
+        #print(img3[j][i])
     
     if i%2 == 0:
         count = sorted(count)
     else:
         count = sorted(count,reverse = True)
+
+for i in range(w):
+    for j in range(w):
+        img3[i][j] = Def2.Huff(img3[i][j])
+print(img3)
