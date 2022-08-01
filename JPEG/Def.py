@@ -1,23 +1,5 @@
 import numpy as np
-from sympy import cos
-
-def FDCT_for_gray(img):
-    img2 = img
-    img_DCT = img
-    sum = 0
-    pi = 3.14159
-    for u in range(8):
-        for  v in range(8):   
-            for x in range(8):
-                for y in range(8):    
-                    if u == 0 and v == 0:
-                        cucv = 1/2
-                    else:
-                        cucv = 1
-                    sum += (cucv/4)*(img2[x,y]*cos(((2*x+1)*u*pi)/16)*cos(((2*y+1)*v*pi)/16))
-            img_DCT[u,v] = sum
-            sum = 0
-    return img_DCT
+from sympy import pi
 
 def quan(img):
     quan =np.array([[16,11,10,16,24,40,51,61],
@@ -90,6 +72,8 @@ def RLE_AC(array1):
                 array3.append("EOB")
                 break
         else:
+            if k >15:
+                k = 15
             array3.append([k,int(array2[i+1])])
             k = 0
     return array3
@@ -106,3 +90,4 @@ def InvRLE_AC(array1):
     
     array3.extend([0]*(64 - len(array3)))
     return array3
+
