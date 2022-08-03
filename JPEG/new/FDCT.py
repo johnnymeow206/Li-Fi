@@ -1,6 +1,10 @@
 import numpy as np
 from sympy import cos, pi
 import cv2
+import time
+
+#start = time.time()
+
 def FDCT_for_gray(img):
     img2 = img
     img_DCT = img
@@ -19,6 +23,7 @@ def FDCT_for_gray(img):
                     sum += (cucv/4)*(img2[x,y]*cos(((2*x+1)*u*pi)/16)*cos(((2*y+1)*v*pi)/16))
             img_DCT[u,v] = sum
             sum = 0
+    img_DCT =img_DCT.astype(np.float32)
     return img_DCT
 def iFDCT_for_gray(img_iDCT0):
     img_iDCT1 = img_iDCT0
@@ -39,6 +44,7 @@ def iFDCT_for_gray(img_iDCT0):
             img_iDCT[x,y] = sum/4
             sum = 0
     img_iDCT = img_iDCT + np.ones((8,8))*128
+    img_iDCT =img_iDCT.astype(np.float32)
     return img_iDCT
 '''
 def iFDCT_for_gray(img):
@@ -61,12 +67,14 @@ def iFDCT_for_gray(img):
             sum = 0
     img4 = img4 + np.ones((8,8))*128
     return img4
-'''
+
 img0 = np.ones((8,8))*255
-print(img0)
+#print(img0)
 img_DCT = FDCT_for_gray(img0)
 print(img_DCT)
 img_iDCT = iFDCT_for_gray(img_DCT)
 print(img_iDCT)
-cv2.imshow('oxxostudio', img_iDCT)           
-cv2.waitKey(0) 
+
+end = time.time()
+print(format(end-start))
+'''

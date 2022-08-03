@@ -2,7 +2,11 @@ import numpy as np
 from sympy import pi
 import cv2
 import Def
-np.set_printoptions(threshold=65536)
+import FDCT
+import FDCT_more
+import time
+
+start = time.time()
 
 rows=256
 cols=256
@@ -11,9 +15,10 @@ i = 0
 w = 32
 
 img=np.fromfile(r'lena', dtype='uint8')
-
 img=img.reshape(rows, cols, channels)
-
+#print(img)
+#cv2.imshow('temp', img)
+#cv2.waitKey(0) 
 img = np.transpose(img) 
 img1 = np.split(img, w, axis=1)
 
@@ -35,15 +40,19 @@ for i in range(w):
         img4 = img4.astype(np.float32)
         img4 -= 128*np.ones((8,8))
         img4 = cv2.dct(img4)
+        #img4 = FDCT.FDCT_for_gray(img4)
+        #img4 = Def.FDCT(img4)
+        #img4 = FDCT_more.FDCT3(img4)
 
         ##############################<<Quantization>>###############################
         img3[i][j] = img4
         img3[i][j] = Def.quan(img3[i][j])
-
+        img3[i][j] = np.round_(img3[i][j],0)
+        '''
         for k in range(8):
             for l in range(8):
-                img3[i][j][k][l] = round(img3[i][j][k][l])
-
+                img3[i][j][k][l] = np.round_(img3[i][j][k][l],0)
+        '''
         ##############################<<IQuantization>>###############################
         img5 = img3[i][j]
         img5 = Def.iquan(img5)
@@ -52,6 +61,9 @@ for i in range(w):
         img4 = np.asmatrix(img5)
         img4 = img4.astype(np.float32)
         img4 = cv2.idct(img4)
+        #img4 = FDCT.iFDCT_for_gray(img4)
+        #img4 = Def.InvFDCT(img4)
+        #img4 = FDCT_more.iFDCT3(img4)
         img4 += 128*np.ones((8,8))
         img3[i][j] = img4
 
@@ -72,14 +84,14 @@ for d in range(31):
     e+=1 
     f+=1
 img = np.transpose(img)
-#print(img)
 img_merge1 = np.transpose(img_merge1)
 img_merge1 = img_merge1.astype(np.uint8)
 img_merge1=img_merge1.reshape(rows, cols, channels)
-print(img_merge1)
-cv2.imshow('temp', img_merge1)
-cv2.waitKey(0) 
-
+#print(img_merge1)
+#cv2.imshow('temp', img_merge1)
+#cv2.waitKey(0) 
+end = time.time()
+print(format(end-start))
 '''
         ################################<<Zig-Zag>>#################################
         img3[i][j] = Def.zigzag(img3[i][j])
