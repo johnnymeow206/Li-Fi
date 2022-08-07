@@ -54,4 +54,3 @@ def iFDCT3(S1):
     f = np.transpose(M)*S1*M
     return f
 
-#m1 = np.vstack(np.array([0.5*math.cos(((2*v+1)*u*math.pi)/16) for v in range (8)]))
