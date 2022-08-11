@@ -1,4 +1,4 @@
-int redPin=3;
+int redPin=13;
 int greenPin=4;
 int bluePin=5;
 
@@ -23,10 +23,12 @@ void loop() {
   analogWrite(redPin,255);
   analogWrite(greenPin,0);
   analogWrite(bluePin,0);
+  delay(1000);
 //green
-  analogWrite(redPin1,0);
+  analogWrite(redPin,0);
   analogWrite(greenPin1,255);
   analogWrite(bluePin1,0);
+  delay(1000);
 //blue
 /*  analogWrite(redPin,0);
   analogWrite(greenPin,0);
