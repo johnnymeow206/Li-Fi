@@ -17,10 +17,10 @@ t = 16
 
 img=np.fromfile(r'lena', dtype='uint8')
 img=img.reshape(rows, cols, channels)
-'''
-cv2.imshow('temp', img)
-cv2.waitKey(0) 
-'''
+
+#cv2.imshow('temp', img)
+#cv2.waitKey(0) 
+
 img = np.transpose(img) 
 img1 = np.split(img, w, axis=1)
 #print(img)
@@ -60,7 +60,12 @@ for i in range(w):
             for l in range(8):
                 img3[i][j][k][l] = np.round_(img3[i][j][k][l],0)
         '''
-
+        ################################<<Zig-Zag>>#################################
+        img3[i][j] = Def.zigzag(img3[i][j])
+        ###################################<<RLE>>##################################
+        img3[i][j] = Def.RLE_AC(img3[i][j])
+        print(img3[i][j])
+'''
         ##############################<<IQuantization>>###############################
         img5 = img3[i][j]
         img5 = Def.iquan(img5)
@@ -98,13 +103,13 @@ img = np.transpose(img)
 img_merge1 = np.transpose(img_merge1)
 img_merge1 = img_merge1.astype(np.uint8)
 img_merge1=img_merge1.reshape(rows, cols, channels)
-print(img3[14][14])
-print(img_merge1[112:120,112:120])
+#print(img3[14][14])
+#print(img_merge1[112:120,112:120])
 #cv2.imshow('temp', img_merge1[112:120,112:120])
 #cv2.imshow('temp', img3[13][13])
 cv2.imshow('temp', img_merge1)
 cv2.waitKey(0) 
-'''
+
 end = time.time()
 print(format(end-start))
 

@@ -73,8 +73,10 @@ def RLE_AC(array1):
                 array3.append("EOB")
                 break
         else:
-            if k >15:
+            if k > 15:
                 k = 15
+                array3.append([k,0])
+                k = 0
             array3.append([k,int(array2[i+1])])
             k = 0
     return array3

@@ -16,39 +16,6 @@ AC_Huff = [['00','01' ,'100', '1011', '11010', '1111000', '11111000', '111111011
            ['11111111000', '1111111111100010', '1111111111100011', '1111111111100100', '1111111111100101', '1111111111100110', ' 1111111111100111', '1111111111101000', '1111111111101001', '1111111111101010'],
            ['1111111111101011', '1111111111101100', '1111111111101101', '1111111111101110', '1111111111101111', '1111111111110000', '1111111111110001', '1111111111110010', '1111111111110011', '1111111111110100'],
            ['1111111111110101', '1111111111110110', '1111111111110111', '1111111111111000', '1111111111111001', '1111111111111010', '1111111111111011', '1111111111111100', '1111111111111101', '1111111111111110','11111111001','1010']]
-
-           #0/0(EOF) 方便起見已移至最後一項
-           #F/0 已移至倒數第二項
-
-def int_to_bin(k):
-    f = k
-    f = int(f)
-    if f < 0 :
-        f = abs(f)
-        f = format(f, 'b')
-        f = ''.join('1' if x == '0' else '0' for x in f)
-        
-    else:
-        f = format(f, 'b') 
-    return f
-
-def Huff(array1):
-    temp = array1
-    diff = temp[0]
-    diff = int_to_bin(diff)
-    if diff == 0:
-        temp[0] =  DC_Huff[0] + diff
-    else:
-        temp[0] =  DC_Huff[len(diff)] + diff
-    i = 1
-    while temp[i][0] != 'E':
-        temp02 = int_to_bin(temp[i][1])
-        temp[i][1] = len(temp02)
-        temp[i] = AC_Huff[temp[i][0]][temp[i][1]-1] + temp02
-        i += 1
-    temp[i] = '1010'
-    return ''.join(temp)
-
 def bin_to_int(list1):
     if list1[0] != '0':
         list1 = int(list1, 2)
@@ -57,55 +24,42 @@ def bin_to_int(list1):
         list1 = int(list1, 2)
         list1 *= -1
     return list1
-    
-def InvDCHuff(inp):
-    input = inp
-    a=0
-    b=0
-    c=1
-    t=0
-    temp = []
-    temp3 = []
-    temp.append(input[0])
-    temp2 =''.join(temp)
-    while temp2 != DC_Huff[a]:
-        if temp2[t] == DC_Huff[a][b]:
-            temp.append(input[c])
-            c+=1
-            t+=1
-            b+=1
-        else:
-            a+=1
-        temp2 =''.join(temp)
-            
-    for j in range(a):
-        temp3.append(input[c+j])
-    output0 = temp3
-    output1 =''.join(output0)
-    output1 = bin_to_int(output1)
-    return output1
-'''
-def InvACHuff(inp):
-    input = inp
-    temp4 = []
-    d = c+j+1
-    e = 0
-    f = 0
-    h = 0
-    i = 1
-    temp4.append(input[d])
-    temp5 =''.join(temp4)
-    while temp5 != AC_Huff[e]:
-        if temp5[h] == AC_Huff[e][f]:
-            temp4.append(input[d+i])
-            i+=1
-            h+=1
-            f+=1
-        else:
-            d+=1
-        temp5 =''.join(temp4)
-    return temp5
 
-k = '100001'
-print(InvDCHuff(k))
-'''
+
+def DC_check(inp1):
+    list001 = inp1
+    for ff01 in range(12):
+        list002 = list001[0:len(DC_Huff[ff01])]
+        if list002 == DC_Huff[ff01]:
+            return ff01     #DC的長度
+            break
+
+def AC_check(inp1):
+    list001 = inp1
+    for ff01 in range(0):
+        return 0
+
+
+
+def InvHuff(inp):
+    input1 = inp
+    now = 0
+    temp01 = []
+##################DC
+    DIFF = input1[now:now+9]
+    diff_length = DC_check(DIFF)
+    if now == 0:
+        now += len(DC_Huff[diff_length])-1
+    else:
+        now += len(DC_Huff[diff_length])
+    temp02 = input1[now:now+diff_length]
+    now += len(temp02)
+    temp02 = bin_to_int(temp02)
+    temp01.append(temp02)
+####################AC
+
+
+    return(temp01)
+
+k = '1011000'
+print(InvHuff(k))        
