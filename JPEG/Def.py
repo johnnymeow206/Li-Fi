@@ -81,7 +81,7 @@ def RLE_AC(array1):
             k = 0
     return array3
 
-def InvRLE_AC(array1): #haven't fix now
+def InvRLE_AC(array1): #haven't check now
     array2 = array1
     array3 = [array2[0]]
     i = 1
