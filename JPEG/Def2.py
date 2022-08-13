@@ -80,6 +80,8 @@ def AC_check(inp1):
     list002 = list001[0:4]
     if list002 == "1010":           #先檢查EOB
         return 'EOB'
+    elif list002 == "11111111001":
+        return 'ZRL'
     else:
         for ff01 in range(16):      #0~F(16)前面有幾個零
             for ff02 in range(10):  #1~A(10)後面有幾位數(不可能為零)
@@ -110,6 +112,9 @@ def InvHuff(inp):
         if zero_and_length == "EOB":
             code_length = 63
             temp01.append(zero_and_length)
+        elif zero_and_length == "ZRL":
+            code_length += 15
+            temp01.append([15,0])
         else:
             code_length += zero_and_length[0]+1
             now += len(AC_Huff[zero_and_length[0]][zero_and_length[1]-1])
@@ -124,4 +129,4 @@ print(InvHuff('10000011011100101000010000111011010110110000001111011100011100110
 #'100 000  11011 10  01 01  00 0  01 00  00 1 11011 01 01 10 1100 0 00 0 1111011 1 00 0 11100 1 1010'
 #[-7, [1, 2], [0,-2], [0, -1], [0, -3], [0, 1], [1, -2], [0, 2], [1, -1], [0, -1], [6 ,1], [0, -1], [2, 1], 'EOB']
 #k = '1011000'
-#print(InvHuff(k))      
+#print(InvHuff(k))   
