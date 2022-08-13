@@ -87,6 +87,10 @@ def InvRLE_AC(array1): #haven't fix now
     i = 1
 
     while array2[i][0] != 'E':
+        if array2[i] == "ZRL":
+            array3.extend([0]*16)
+            i+=1
+        else:
             array3.extend([0]*int(array2[i][0]))
             array3.append(array2[i][1])
             i += 1
