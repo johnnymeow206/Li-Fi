@@ -1,3 +1,4 @@
+import Huff_try
 DC_Huff = ['00', '010', '011', '100', '101', '110', '1110', '11110', '111110', '1111110', '11111110', '111111110' ]
 
 AC_Huff = [['00','01' ,'100', '1011', '11010', '1111000', '11111000', '1111110110', '1111111110000010', '1111111110000011'],
@@ -41,71 +42,48 @@ def Huff(array1):
     else:
         temp[0] =  DC_Huff[len(diff)] + diff
     i = 1
-    while temp[i][0] != 'E':
-        temp02 = int_to_bin(temp[i][1])
-        temp[i][1] = len(temp02)
-        temp[i] = AC_Huff[temp[i][0]][temp[i][1]-1] + temp02
-        i += 1
-    temp[i] = '1010'
+    ff00 = 1
+    while ff00 != 64:
+        if temp[i][0] == 'Z':     #ZRL detect
+            temp[i] = '11111111001'
+            ff00 += 16
+            i += 1
+        elif temp[i][0] == 'E':   #EOB detect
+            temp[i] = '1010'
+            ff00 = 64
+        else:                     #normal AC detect 
+            ff00 += temp[i][0] + 1
+            temp02 = int_to_bin(temp[i][1])
+            temp[i][1] = len(temp02)
+            temp[i] = AC_Huff[temp[i][0]][temp[i][1]-1] + temp02
+            i += 1
     return ''.join(temp)
-
-def bin_to_int(list1):
-    if list1[0] != '0':
-        list1 = int(list1, 2)
+'''
+k = [-1, 'EOB']
+print(Huff(k))
+'''
+def Huff1(array1):
+    tmep03 = array1
+    diff = tmep03[0]
+    diff = int_to_bin(diff)
+    if diff == 0:
+        tmep03[0] =  DC_Huff[0] + diff
     else:
-        list1 = ''.join('1' if x == '0' else '0' for x in list1)
-        list1 = int(list1, 2)
-        list1 *= -1
-    return list1
-    
-def InvDCHuff(inp):
-    input = inp
-    a=0
-    b=0
-    c=1
-    t=0
-    temp = []
-    temp3 = []
-    temp.append(input[0])
-    temp2 =''.join(temp)
-    while temp2 != DC_Huff[a]:
-        if temp2[t] == DC_Huff[a][b]:
-            temp.append(input[c])
-            c+=1
-            t+=1
+        tmep03[0] =  DC_Huff[len(diff)] + diff
+    a = 0
+    b = 1
+    i=1
+    tmep = tmep03[b]
+    while tmep03[i-1] != '1010':
+        if tmep03[b][0] == 'E':   #EOB detect
+            tmep03[i] = '1010'
+        else:
+            tmep02 = int_to_bin(tmep03[b][1])
+            tmep[1] = len(tmep02)
+            while tmep != Huff_try.invRLE_code(a):
+                a+=1
+            tmep03[i] = Huff_try.iAC_Huff[a] + tmep02
             b+=1
-        else:
-            a+=1
-        temp2 =''.join(temp)
-            
-    for j in range(a):
-        temp3.append(input[c+j])
-    output0 = temp3
-    output1 =''.join(output0)
-    output1 = bin_to_int(output1)
-    return output1
-'''
-def InvACHuff(inp):
-    input = inp
-    temp4 = []
-    d = c+j+1
-    e = 0
-    f = 0
-    h = 0
-    i = 1
-    temp4.append(input[d])
-    temp5 =''.join(temp4)
-    while temp5 != AC_Huff[e]:
-        if temp5[h] == AC_Huff[e][f]:
-            temp4.append(input[d+i])
-            i+=1
-            h+=1
-            f+=1
-        else:
-            d+=1
-        temp5 =''.join(temp4)
-    return temp5
-
-k = '100001'
-print(InvDCHuff(k))
-'''
+            a = 0
+        i+=1
+    return ''.join(tmep03)
