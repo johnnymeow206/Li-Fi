@@ -113,7 +113,7 @@ def InvHuff(inp):
             code_length = 63
             temp01.append(zero_and_length)
         elif zero_and_length == "ZRL":
-            code_length += 15
+            code_length += 16
             temp01.append([15,0])
         else:
             code_length += zero_and_length[0]+1
