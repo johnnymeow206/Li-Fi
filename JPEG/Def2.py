@@ -32,6 +32,15 @@ def int_to_bin(k):
         f = format(f, 'b') 
     return f
 
+def bin_to_int(list1):
+    if list1[0] != '0':
+        list1 = int(list1, 2)
+    else:
+        list1 = ''.join('1' if x == '0' else '0' for x in list1)
+        list1 = int(list1, 2)
+        list1 *= -1
+    return list1
+
 def Huff(array1):
     temp = array1
     diff = temp[0]
@@ -57,7 +66,62 @@ def Huff(array1):
             temp[i] = AC_Huff[temp[i][0]][temp[i][1]-1] + temp02
             i += 1
     return ''.join(temp)
-'''
-k = [-1, 'EOB']
-print(Huff(k))
-'''
+
+def DC_check(inp1):
+    list001 = inp1
+    for ff01 in range(12):
+        list002 = list001[0:len(DC_Huff[ff01])]
+        if list002 == DC_Huff[ff01]:
+            return ff01     #DC的長度
+            break
+
+def AC_check(inp1):
+    list001 = inp1
+    list002 = list001[0:4]
+    if list002 == "1010":           #先檢查EOB
+        return 'EOB'
+    else:
+        for ff01 in range(16):      #0~F(16)前面有幾個零
+            for ff02 in range(10):  #1~A(10)後面有幾位數(不可能為零)
+                list002 = list001[0:len(AC_Huff[ff01][ff02])]
+                if list002 == AC_Huff[ff01][ff02]:
+                    return [ff01, ff02+1]       #回傳幾個零,後有幾位數
+
+
+
+def InvHuff(inp):
+    input1 = inp
+    now = 0
+    temp01 = []
+    ##################DC
+    TEMP00 = input1[now:now+9]
+    diff_length = DC_check(TEMP00)
+    now += len(DC_Huff[diff_length])
+    temp02 = input1[now:now+diff_length]
+    now += len(temp02)
+    temp02 = bin_to_int(temp02)
+    temp01.append(temp02)
+    ####################AC
+    code_length = 0
+    while code_length < 63:
+        TEMP00 = input1[now:now+16]
+        zero_and_length = AC_check(TEMP00) 
+        
+        if zero_and_length == "EOB":
+            code_length = 63
+            temp01.append(zero_and_length)
+        else:
+            code_length += zero_and_length[0]+1
+            now += len(AC_Huff[zero_and_length[0]][zero_and_length[1]-1])
+            temp02 = input1[now:now+zero_and_length[1]]
+            now += len(temp02)
+            temp02 = bin_to_int(temp02)
+            temp02 = [zero_and_length[0], temp02]
+            temp01.append(temp02)
+    return(temp01)
+
+print(InvHuff('1000001101110010100001000011101101011011000000111101110001110011010'))
+#'100 000  11011 10  01 01  00 0  01 00  00 1 11011 01 01 10 1100 0 00 0 1111011 1 00 0 11100 1 1010'
+#[-7, [1, 2], [0,-2], [0, -1], [0, -3], [0, 1], [1, -2], [0, 2], [1, -1], [0, -1], [6 ,1], [0, -1], [2, 1], 'EOB']
+#k = '1011000'
+#print(InvHuff(k))      
