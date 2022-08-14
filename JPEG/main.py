@@ -49,6 +49,24 @@ for i in range(w):
         img3[i][j] = Def.RLE_AC(img3[i][j])
         #print(img3[i][j])
 
+########DIFF
+temp = []
+temp02 = 0
+for i in range(w):
+    for j in range(w):
+        temp = img3[j][i][0] - temp02
+        temp02 = img3[j][i][0]
+        img3[j][i][0] = temp
+########
+for i in range(w):
+    for j in range(w):
+        img3[i][j] = Def2.Huff(img3[i][j])
+print(img3)
+
+
+
+########snake diff
+'''
 pre_last = 0
 for i in range(w):
     diff = []
@@ -69,8 +87,5 @@ for i in range(w):
         count = sorted(count)
     else:
         count = sorted(count,reverse = True)
+'''
 
-for i in range(w):
-    for j in range(w):
-        img3[i][j] = Def2.Huff(img3[i][j])
-print(img3)
