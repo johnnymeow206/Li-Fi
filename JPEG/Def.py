@@ -69,19 +69,19 @@ def RLE_AC(array1):
     for i in range (63):   
         if array2[i+1] == 0:
             k += 1
-            if k == 16:
-                array3.append("ZRL")
-                k = 0
-            elif i+1 == 63:
+            if i+1 == 63:
                 array3.append("EOB")
                 break
 
         else:
+            while k >= 16:
+                array3.append("ZRL")
+                k -= 16
             array3.append([k,int(array2[i+1])])
             k = 0
     return array3
 
-def InvRLE_AC(array1): #haven't check now
+def InvRLE_AC(array1): #haven't check  now
     array2 = array1
     array3 = [array2[0]]
     i = 1
