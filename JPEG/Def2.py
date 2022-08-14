@@ -51,7 +51,7 @@ def Huff(array1):
         temp[0] =  DC_Huff[len(diff)] + diff
     i = 1
     ff00 = 1
-    while ff00 != 64:
+    while ff00 < 64:
         if temp[i][0] == 'Z':     #ZRL detect
             temp[i] = '11111111001'
             ff00 += 16
@@ -80,7 +80,7 @@ def AC_check(inp1):
     list002 = list001[0:4]
     if list002 == "1010":           #先檢查EOB
         return 'EOB'
-    elif list002 == "11111111001":
+    elif list002 == "11111111001":  #再檢查ZRL
         return 'ZRL'
     else:
         for ff01 in range(16):      #0~F(16)前面有幾個零
@@ -89,9 +89,47 @@ def AC_check(inp1):
                 if list002 == AC_Huff[ff01][ff02]:
                     return [ff01, ff02+1]       #回傳幾個零,後有幾位數
 
+def InvHuff(inp):   #整體運行
+    w = 32
+    now = 0
+    input1 = inp
+    out_list = []
+    for i in range(w):
+        for j in range(w):
+            temp01 = []
+            ##################DC
+            TEMP00 = input1[now:now+9]
+            diff_length = DC_check(TEMP00)
+            now += len(DC_Huff[diff_length])
+            temp02 = input1[now:now+diff_length]
+            now += len(temp02)
+            temp02 = bin_to_int(temp02)
+            temp01.append(temp02)
+            ####################AC
+            code_length = 0
+            while code_length < 63:
+                TEMP00 = input1[now:now+16]
+                zero_and_length = AC_check(TEMP00) 
+                
+                if zero_and_length == 'EOB':
+                    code_length = 63
+                    temp01.append(zero_and_length)
+                elif zero_and_length == 'ZRL':
+                    code_length += 16
+                    temp01.append([15,0])
+                else:
+                    code_length += int(zero_and_length[0])+1
+                    now += len(AC_Huff[zero_and_length[0]][zero_and_length[1]-1])
+                    temp02 = input1[now:now+zero_and_length[1]]
+                    now += len(temp02)
+                    temp02 = bin_to_int(temp02)
+                    temp02 = [zero_and_length[0], temp02]
+                    temp01.append(temp02)
+            out_list.append(temp01)
+    return out_list
 
 
-def InvHuff(inp):
+def InvHuff_test(inp):   #內圈函式測試用
     input1 = inp
     now = 0
     temp01 = []
@@ -116,7 +154,7 @@ def InvHuff(inp):
             code_length += 16
             temp01.append([15,0])
         else:
-            code_length += zero_and_length[0]+1
+            code_length += int(zero_and_length[0])+1
             now += len(AC_Huff[zero_and_length[0]][zero_and_length[1]-1])
             temp02 = input1[now:now+zero_and_length[1]]
             now += len(temp02)
@@ -125,7 +163,7 @@ def InvHuff(inp):
             temp01.append(temp02)
     return(temp01)
 
-print(InvHuff('1000001101110010100001000011101101011011000000111101110001110011010'))
+#print(InvHuff('1000001101110010100001000011101101011011000000111101110001110011010'))
 #'100 000  11011 10  01 01  00 0  01 00  00 1 11011 01 01 10 1100 0 00 0 1111011 1 00 0 11100 1 1010'
 #[-7, [1, 2], [0,-2], [0, -1], [0, -3], [0, 1], [1, -2], [0, 2], [1, -1], [0, -1], [6 ,1], [0, -1], [2, 1], 'EOB']
 #k = '1011000'
