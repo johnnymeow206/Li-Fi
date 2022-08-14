@@ -50,23 +50,33 @@ for i in range(w):
         #print(img3[i][j])
 
 ########DIFF
-temp = []
 temp02 = 0
 for i in range(w):
     for j in range(w):
         temp = img3[j][i][0] - temp02
         temp02 = img3[j][i][0]
         img3[j][i][0] = temp
-########
+########Huff+combin
 for i in range(w):
     for j in range(w):
         img3[i][j] = Def2.Huff(img3[i][j])
+    img3[i] = ''.join(img3[i])
+img3 = ''.join(img3)
 print(img3)
 
 
+'''
+#######invDIFF(假設已排序好)
+#inp_list 為輸入矩陣
+temp02 = 0
+for i in range(w):
+    for j in range(w):
+        temp01 = inp_list[j][i][0] + temp02
+        temp02 = inp_list[j][i][0]
+        inp_list[j][i][0] = temp
 
 ########snake diff
-'''
+
 pre_last = 0
 for i in range(w):
     diff = []
