@@ -81,12 +81,16 @@ def RLE_AC(array1):
             k = 0
     return array3
 
-def InvRLE_AC(array1):
+def InvRLE_AC(array1): #haven't check  now
     array2 = array1
     array3 = [array2[0]]
     i = 1
 
     while array2[i][0] != 'E':
+        if array2[i] == [15,0]:
+            array3.extend([0]*16)
+            i+=1
+        else:
             array3.extend([0]*int(array2[i][0]))
             array3.append(array2[i][1])
             i += 1
