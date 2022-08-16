@@ -62,7 +62,8 @@ for i in range(w):
         img3[i][j] = Def2.Huff(img3[i][j])
     img3[i] = ''.join(img3[i])
 img3 = ''.join(img3)
-print(img3)
+#print(img3)
+print(Def2.InvHuff(img3))
 
 
 '''
