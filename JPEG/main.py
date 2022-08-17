@@ -62,20 +62,61 @@ for i in range(w):
         img3[i][j] = Def2.Huff(img3[i][j])
     img3[i] = ''.join(img3[i])
 img3 = ''.join(img3)
-#print(img3)
-print(Def2.InvHuff(img3))
 
 
-'''
-#######invDIFF(假設已排序好)
-#inp_list 為輸入矩陣
-temp02 = 0
+
+img3 = Def2.InvHuff(img3)
+img3 = np.reshape(img3,[32,32])
+#######invDIFF(假設已排序好)    #有warning
+img3 = Def.invDiff(img3)
+####inv RLE
 for i in range(w):
     for j in range(w):
-        temp01 = inp_list[j][i][0] + temp02
-        temp02 = inp_list[j][i][0]
-        inp_list[j][i][0] = temp
+        ###################################<<invRLE>>##################################
+        img3[i][j] = Def.InvRLE_AC(img3[i][j])
+        
+        ################################<<iZig-Zag>>#################################
+        img3[i][j] = Def.izigzag(img3[i][j])
+        
+        ##############################<<IQuantization>>###############################
+        img5 = img3[i][j]
+        img5 = Def.iquan(img5)
+        
+        ###################################<<IDCT>>###################################
+        img4 = np.asmatrix(img5)
+        img4 = img4.astype(np.float32)
+        #img4 = cv2.idct(img4)
+        #img4 = FDCT.iFDCT_for_gray(img4)
+        #img4 = Def.InvFDCT(img4)
+        img4 = Def.iFDCT(img4)
+        img4 += 128*np.ones((8,8))
+        img3[i][j] = img4
+        img3[i][j] = np.clip(img3[i][j],0,255)
 
+g = 32
+img_merge = [[0 for k1 in range(8)] for k2 in range(32)]
+for c in range(g):
+    img_merge[c] = img3[c][0]
+    b = 1
+    for a in range(31):
+        img_merge[c] = np.hstack((img_merge[c],img3[c][b]))
+        b+=1
+
+img_merge1 = img_merge[0]
+e = 0
+f = 1
+for d in range(31):
+    img_merge1 = np.vstack((img_merge1,img_merge[f]))
+    e+=1 
+    f+=1
+img = np.transpose(img)
+img_merge1 = np.transpose(img_merge1)
+img_merge1 = img_merge1.astype(np.uint8)
+img_merge1=img_merge1.reshape(rows, cols, channels)
+
+cv2.imshow('temp', img_merge1)
+cv2.waitKey(0) 
+'''
 ########snake diff
 
 pre_last = 0
@@ -99,4 +140,3 @@ for i in range(w):
     else:
         count = sorted(count,reverse = True)
 '''
-
