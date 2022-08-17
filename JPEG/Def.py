@@ -87,13 +87,9 @@ def InvRLE_AC(array1): #haven't check  now
     i = 1
 
     while array2[i][0] != 'E':
-        if array2[i] == "ZRL":
-            array3.extend([0]*16)
-            i+=1
-        else:
-            array3.extend([0]*int(array2[i][0]))
-            array3.append(array2[i][1])
-            i += 1
+        array3.extend([0]*int(array2[i][0]))
+        array3.append(array2[i][1])
+        i += 1
     
     array3.extend([0]*(64 - len(array3)))
     return array3
@@ -114,15 +110,26 @@ def FDCT(list_in):
             F[u,v] = 0.25*cucv*list*C
     return F
 
-def InvFDCT(FD):
+def iFDCT(S1):
     f = np.ones((8,8))
-    FD = np.reshape(FD,(1,64))
-    FD[0,0]=FD[0,0]*0.5
-    for x in range(8):
-        for  y in range(8):
-            Cx = np.asmatrix(np.array([cos(((2*x+1)*u*pi)/16) for u in range (8)]))
-            Cy = np.asmatrix(np.array([cos(((2*y+1)*v*pi)/16) for v in range (8)]))
-            C = np.reshape(np.transpose(Cx)*Cy,(64,1))
-            f[x,y] = 0.25*FD*C
+    M = []
+    m0 = np.array([1/(2*math.sqrt(2)) for x in range (8)])
+    m1 = [[0 for k1 in range(8)] for k2 in range(7)]
+    for u0 in range(7):
+        u = u0+1
+        m1[u0] = np.array([0.5*math.cos(((2*v+1)*u*math.pi)/16) for v in range (8)])
+    M = np.asmatrix(np.vstack((m0,m1)))
+    f = np.transpose(M)*S1*M
     return f
 
+#inp_list 為輸入矩陣
+def invDiff(inp_list):
+    inp = inp_list
+    w = 32
+    temp02 = 0
+    for i in range(w):
+        for j in range(w):
+            temp01 = inp[j][i][0] + temp02
+            temp02 = inp[j][i][0]
+            inp[j][i][0] = temp01
+    return inp
