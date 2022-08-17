@@ -35,7 +35,6 @@ def encode(encode_img):
 
         for j in range(w):
             img3[i][j] = img2[j]
-    #print(img3[14][14])
     for i in range(w):
         for j in range(w):
             
@@ -62,43 +61,56 @@ def encode(encode_img):
                 for l in range(8):
                     img3[i][j][k][l] = np.round_(img3[i][j][k][l],0)
             '''
+            
             ################################<<Zig-Zag>>#################################
             img3[i][j] = Def.zigzag(img3[i][j])
+
             ###################################<<RLE>>##################################
             img3[i][j] = Def.RLE_AC(img3[i][j])
             
             ###################################<<DPCM>>##################################
             temp2 = 0
-            temp = img3[i][j][0]-temp2
-            temp2 = img3[i][j][0]
-            img3[i][j][0] = temp
+            temp = img3[j][i][0]-temp2
+            temp2 = img3[j][i][0]
+            img3[j][i][0] = temp
+            '''
             ###################################<<Huffman>>##################################
             img3[i][j] = Def2.Huff1(img3[i][j])
         img3[i] = ''.join(img3[i])
     img3 = ''.join(img3)
+    '''
     return img3
 
 def decode(decode_img):
+    img3 = [[[[0 for k1 in range(w)] for k2 in range(w)] for k3 in range(w)] for k4 in range(w)]
+    
     inp_list = [[[[0 for k1 in range(w)] for k2 in range(w)] for k3 in range(w)] for k4 in range(w)]
-    temp02 = 0 
-    k = 0
+    temp02 = 0
+    '''
             ###################################<<invHuffman>>##################################
-    img3 = Huff_try.InvHuff(decode_img)
+    img5 = Huff_try.InvHuff(decode_img)
+    o = 0
+    #img3 = np.reshape(img3,[32,32])
     for i in range(w):
         for j in range(w):
-            inp_list[i][j] = img3[k]
-            k+=1
+            inp_list[i][j] = img5[o]
+            o+=1
+            '''
+    inp_list = decode_img 
+    for i in range(w):
+        for j in range(w):
 
             ###################################<<invDPCM>>##################################
-            temp01 = inp_list[i][j][0] + temp02
-            temp02 = inp_list[i][j][0]
-            inp_list[i][j][0] = temp01
+            temp01 = inp_list[j][i][0] + temp02
+            temp02 = inp_list[j][i][0]
+            inp_list[j][i][0] = temp01
 
             ###################################<<invRLE>>##################################
             img3[i][j] = Def.InvRLE_AC(inp_list[i][j])
+         
             ################################<<iZig-Zag>>#################################
             img3[i][j] = Def.izigzag(img3[i][j])
-
+          
             ##############################<<IQuantization>>###############################
             img5 = img3[i][j]
             img5 = Def.iquan(img5)
@@ -117,6 +129,7 @@ def decode(decode_img):
 
 abc = encode(img)
 bcd = decode(abc)
+#print(bcd)
 
 g = 32
 img_merge = [[0 for k1 in range(8)] for k2 in range(32)]
@@ -138,10 +151,6 @@ img = np.transpose(img)
 img_merge1 = np.transpose(img_merge1)
 img_merge1 = img_merge1.astype(np.uint8)
 img_merge1=img_merge1.reshape(rows, cols, channels)
-#print(img3[14][14])
-#print(img_merge1[112:120,112:120])
-#cv2.imshow('temp', img_merge1[112:120,112:120])
-#cv2.imshow('temp', img3[13][13])
 cv2.imshow('temp', img_merge1)
 cv2.waitKey(0) 
 
