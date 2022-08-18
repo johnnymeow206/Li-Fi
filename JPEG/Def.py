@@ -130,6 +130,6 @@ def invDiff(inp_list):
     for i in range(w):
         for j in range(w):
             temp01 = inp[j][i][0] + temp02
-            temp02 = inp[j][i][0]
             inp[j][i][0] = temp01
+            temp02 = inp[j][i][0]
     return inp
