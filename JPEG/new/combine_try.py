@@ -1,3 +1,4 @@
+
 import numpy as np
 from sympy import pi
 import cv2
@@ -25,7 +26,7 @@ inp_list = [[[[0 for k1 in range(w)] for k2 in range(w)] for k3 in range(w)] for
 img3 = [[[[0 for k1 in range(w)] for k2 in range(w)] for k3 in range(w)] for k4 in range(w)]
 temp02 = 0
         ###################################<<invHuffman>>##################################
-img5 = Huff_try.InvHuff(abc)
+img5 = Huff_try.InvHuff1(abc)
 o = 0
 #img3 = np.reshape(img3,[32,32])
 for i in range(w):

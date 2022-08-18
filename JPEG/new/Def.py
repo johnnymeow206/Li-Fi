@@ -125,3 +125,14 @@ def InvFDCT(FD):
             C = np.reshape(np.transpose(Cx)*Cy,(64,1))
             f[x,y] = 0.25*FD*C
     return f
+
+def invDiff(inp_list):
+    inp = inp_list
+    w = 32
+    temp02 = 0
+    for i in range(w):
+        for j in range(w):
+            temp01 = inp[j][i][0] + temp02
+            inp[j][i][0] = temp01
+            temp02 = inp[j][i][0]
+    return inp

@@ -19,69 +19,6 @@ AC_Huff = [['00','01' ,'100', '1011', '11010', '1111000', '11111000', '111111011
            ['1111111111101011', '1111111111101100', '1111111111101101', '1111111111101110', '1111111111101111', '1111111111110000', '1111111111110001', '1111111111110010', '1111111111110011', '1111111111110100'],
            ['1111111111110101', '1111111111110110', '1111111111110111', '1111111111111000', '1111111111111001', '1111111111111010', '1111111111111011', '1111111111111100', '1111111111111101', '1111111111111110','11111111001','1010']]
 
-'''
-def bin_to_int(list1):
-    if list1[0] != '0':
-        list1 = int(list1, 2)
-    else:
-        list1 = ''.join('1' if x == '0' else '0' for x in list1)
-        list1 = int(list1, 2)
-        list1 *= -1
-    return list1
-    
-def InvDCHuff(inp):
-    input = inp
-    ############DC
-    a=0
-    b=0
-    c=1
-    t=0
-    temp = []
-    temp3 = []
-    temp.append(input[0])
-    temp2 =''.join(temp)
-    while temp2 != DC_Huff[a]:
-        if temp2[t] == DC_Huff[a][b]:
-            temp.append(input[c])
-            c+=1
-            t+=1
-            b+=1
-        else:
-            a+=1
-        temp2 =''.join(temp)
-        
-    for j in range(a):
-        temp3.append(input[c+j])
-    output0 = temp3
-    output1 =''.join(output0)
-    output1 = bin_to_int(output1)
-
-    ##############AC##############
-    temp4 = []
-    d = c+j+1
-    e = 0
-    f = 0
-    g = 0
-    h = 0
-    i = 1
-    temp4.append(input[d])
-    temp5 =''.join(temp4)
-    while temp5 != AC_Huff[e][f]:
-        if temp5[h] == AC_Huff[e][f][g]:
-            temp4.append(input[d+i])
-            i+=1
-            h+=1
-            g+=1
-        else:
-            f+=1
-            if f == 10:
-                e += 1
-                f = 0
-                while e == 15:
-
-        temp5 =''.join(temp4)
-    return output1
-'''
 DC_Huff = ['00', '010', '011', '100', '101', '110', '1110', '11110', '111110', '1111110', '11111110', '111111110' ]
 
 iAC_Huff = ['00','01','100','1010','1011','1100','11010','11011','11100','111010','111011','1111000','1111001','1111010','1111011','11111000',
@@ -112,6 +49,17 @@ def invRLE_code(a):
                 [14,3],[14,4],[14,5] ,[14,6],[14,7] ,[14,8],[14,9],[14,10],[15,1],[15,2],[15,3],[15,4] ,[15,5],[15,6] ,[15,7],[15,8],
                 [15,9],[15,10]]
     return iRLE_code[a]
+def int_to_bin(k):
+    f = k
+    f = int(f)
+    if f < 0 :
+        f = abs(f)
+        f = format(f, 'b')
+        f = ''.join('1' if x == '0' else '0' for x in f)
+        
+    else:
+        f = format(f, 'b') 
+    return f
 
 def bin_to_int(list1):
     if list1[0] != '0':
@@ -122,7 +70,37 @@ def bin_to_int(list1):
         list1 *= -1
     return list1
 
-def InvHuff(inp):
+def Huff1(array1):
+    temp03 = array1
+    diff = temp03[0]
+
+    if diff == 0:
+        temp03[0] =  DC_Huff[0]
+    else:
+        diff = int_to_bin(diff)
+        temp03[0] =  DC_Huff[len(diff)] + diff
+    a = 0
+    i=1
+    temp = temp03[i]
+    while temp03[i][0] != 'E':
+        if temp03[i][0] == 15:     #ZRL detect
+            temp03[i] = '11111111001'
+        else:
+            temp02 = int_to_bin(temp03[i][1])
+            temp[1] = len(temp02)
+            while temp != invRLE_code(a):
+                a+=1
+            temp03[i] = iAC_Huff[a] + temp02
+            a = 0
+        i+=1
+        temp = temp03[i]
+        #print(temp03)
+    temp03[i] = '1010'
+    return ''.join(temp03)
+#print(Huff1([-7, [1, 2], [0, -2], [0, -1], [0, -3], [0, 1], [1, -2], [0, 2], [1, -1], [0, -1], [6, 1], [0, -1], [2, 1], 'EOB']))
+#'100 000  11011 10  01 01  00 0  01 00  00 1  11011 01  01 10  1100 0  00 0  1111011 1  00 0  11100 1  1010'
+
+def InvHuff1(inp):
     input = inp
     temp8 = []
     z = 0
@@ -144,13 +122,16 @@ def InvHuff(inp):
             else:
                 a+=1
             temp2 =''.join(temp)
-            
-        for j in range(a):
-            temp3.append(input[c+j])
-        output0 = temp3
-        output1 =''.join(output0)
-        output1 = bin_to_int(output1)
-        temp6.append(output1)
+        if temp2 == '00':
+            temp6.append(0)
+            j = -1
+        else: 
+            for j in range(a):
+                temp3.append(input[c+j])
+            output0 = temp3
+            output1 =''.join(output0)
+            output1 = bin_to_int(output1)
+            temp6.append(output1)
         ##########AC############
         temp4 = []
         temp7 = []
@@ -170,6 +151,8 @@ def InvHuff(inp):
                 else:
                     e+=1
                 temp5 =''.join(temp4)
+            #print(a1)
+            #print(temp5)
             output4 = invRLE_code(e)
             for l in range(output4[1]):
                 temp7.append(input[d+l+1])
@@ -179,6 +162,8 @@ def InvHuff(inp):
             
             if output4 == invRLE_code(3):
                 temp6.append('EOB')
+            elif output4 == invRLE_code(31):
+                temp6.append(output4)
             else:
                 output3 = bin_to_int(output3)
                 output4[1] = output3
@@ -192,7 +177,10 @@ def InvHuff(inp):
         z = d
         temp8.append(temp6)
     return temp8
-
-#print(InvHuff('1000001101110010100001000011101101011011000000111101110001110011010'))
+#k = Huff1([-35, [4, 1], 'EOB'])
+#print(k)
+#print(InvHuff1('0011101111010'))
+#'00  111011 1  1010'
 #'100 000  11011 10  01 01  00 0  01 00  00 1 11011 01 01 10 1100 0 00 0 1111011 1 00 0 11100 1 1010'
 #[-7, [1, 2], [0,-2], [0, -1], [0, -3], [0, 1], [1, -2], [0, 2], [1, -1], [0, -1], [6 ,1], [0, -1], [2, 1], 'EOB']
+

@@ -33,6 +33,15 @@ def int_to_bin(k):
         f = format(f, 'b') 
     return f
 
+def bin_to_int(list1):
+    if list1[0] != '0':
+        list1 = int(list1, 2)
+    else:
+        list1 = ''.join('1' if x == '0' else '0' for x in list1)
+        list1 = int(list1, 2)
+        list1 *= -1
+    return list1
+
 def Huff(array1):
     temp = array1
     diff = temp[0]
@@ -62,28 +71,67 @@ def Huff(array1):
 k = [-1, 'EOB']
 print(Huff(k))
 '''
-def Huff1(array1):
-    tmep03 = array1
-    diff = tmep03[0]
-    diff = int_to_bin(diff)
-    if diff == 0:
-        tmep03[0] =  DC_Huff[0] + diff
+
+def DC_check(inp1):
+    list001 = inp1
+    for ff01 in range(12):
+        list002 = list001[0:len(DC_Huff[ff01])]
+        if list002 == DC_Huff[ff01]:
+            return ff01     #DC的長度
+    
+def AC_check(inp1):
+    list001 = inp1
+    list002 = list001[0:4]
+    list003 = list001[0:11]
+    if list002 == "1010":           #先檢查EOB
+        return 'EOB'
+    elif list003 == "11111111001":  #再檢查ZRL
+        return 'ZRL'
     else:
-        tmep03[0] =  DC_Huff[len(diff)] + diff
-    a = 0
-    b = 1
-    i=1
-    tmep = tmep03[b]
-    while tmep03[i-1] != '1010':
-        if tmep03[b][0] == 'E':   #EOB detect
-            tmep03[i] = '1010'
-        else:
-            tmep02 = int_to_bin(tmep03[b][1])
-            tmep[1] = len(tmep02)
-            while tmep != Huff_try.invRLE_code(a):
-                a+=1
-            tmep03[i] = Huff_try.iAC_Huff[a] + tmep02
-            b+=1
-            a = 0
-        i+=1
-    return ''.join(tmep03)
+        for ff01 in range(16):      #0~F(16)前面有幾個零
+            for ff02 in range(10):  #1~A(10)後面有幾位數(不可能為零)
+                list002 = list001[0:len(AC_Huff[ff01][ff02])]
+                if list002 == AC_Huff[ff01][ff02]:
+                    return [ff01, ff02+1]       #回傳幾個零,後有幾位數
+
+def InvHuff(inp):   #整體運行
+    w = 32
+    now = 0
+    input1 = inp
+    out_list = []
+    for i in range(1024):
+        #for j in range(w):
+            temp01 = []
+            ##################DC
+            TEMP00 = input1[now:now+9]
+            diff_length = DC_check(TEMP00)
+            now += len(DC_Huff[diff_length])
+            temp02 = input1[now:now+diff_length]
+            now += len(temp02)
+            temp02 = bin_to_int(temp02)
+            temp01.append(temp02)
+            ####################AC
+            code_length = 1
+            while code_length < 64:
+                TEMP00 = input1[now:now+16]
+                zero_and_length = AC_check(TEMP00) 
+                
+                if zero_and_length == 'EOB':
+                    code_length = 64
+                    temp01.append(zero_and_length)
+                    now += 4
+                elif zero_and_length == 'ZRL':
+                    code_length += 16
+                    temp01.append([15,0])
+                    now += 11
+                else:
+                    code_length += (zero_and_length[0]+1)
+                    now += len(AC_Huff[zero_and_length[0]][zero_and_length[1]-1])
+                    temp02 = input1[now:now+zero_and_length[1]]
+                    now += len(temp02)
+                    temp02 = bin_to_int(temp02)
+                    temp02 = [zero_and_length[0], temp02]
+                    temp01.append(temp02)
+            out_list.append(temp01)
+            
+    return out_list
