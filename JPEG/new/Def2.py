@@ -1,4 +1,4 @@
-import Huff_try
+import Def_for_Huff
 DC_Huff = ['00', '010', '011', '100', '101', '110', '1110', '11110', '111110', '1111110', '11111110', '111111110' ]
 
 AC_Huff = [['00','01' ,'100', '1011', '11010', '1111000', '11111000', '1111110110', '1111111110000010', '1111111110000011'],
@@ -135,3 +135,14 @@ def InvHuff(inp):   #整體運行
             out_list.append(temp01)
             
     return out_list
+
+def invDiff(inp_list):
+    inp = inp_list
+    w = 32
+    temp02 = 0
+    for i in range(w):
+        for j in range(w):
+            temp01 = inp[j][i][0] + temp02
+            inp[j][i][0] = temp01
+            temp02 = inp[j][i][0]
+    return inp

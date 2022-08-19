@@ -3,12 +3,10 @@ from sympy import pi
 import cv2
 import Def
 import Def2
-import FDCT
-import FDCT_more
 import time
-import Huff_try
+import Def_for_Huff
 np.set_printoptions(threshold=np.inf)
-start = time.time()
+
 
 rows=256
 cols=256
@@ -44,9 +42,8 @@ def encode(encode_img):
             #img4 = cv2.dct(img4)
             #img4 = FDCT.FDCT_for_gray(img4)
             #img4 = Def.FDCT(img4)
-            img4 = FDCT_more.FDCT3(img4)
+            img4 = Def.FDCT3(img4)
 
-            #print(img3[11][11])
             ##############################<<Quantization>>###############################
             img3[i][j] = img4
             img3[i][j] = Def.quan(img3[i][j])
@@ -66,7 +63,7 @@ def encode(encode_img):
             img3[i][j][0] = temp
     #'''
             ###################################<<Huffman>>##################################
-            img3[i][j] = Huff_try.Huff1(img3[i][j])
+            img3[i][j] = Def_for_Huff.Huff1(img3[i][j])
             #img3[i][j] = Def2.Huff(img3[i][j])
             #print(img3[i][j])
         img3[i] = ''.join(img3[i])
@@ -82,7 +79,7 @@ def decode(decode_img):
     #inp_list = decode_img
     #'''
             ###################################<<invHuffman>>##################################
-    img5 = Huff_try.InvHuff1(decode_img)
+    img5 = Def_for_Huff.InvHuff1(decode_img)
     #img5 = Def2.InvHuff(decode_img)
     o = 0
     #img3 = np.reshape(img3,[32,32])
@@ -119,17 +116,19 @@ def decode(decode_img):
             #img4 = cv2.idct(img4)
             #img4 = FDCT.iFDCT_for_gray(img4)
             #img4 = Def.InvFDCT(img4)
-            img4 = FDCT_more.iFDCT3(img4)
+            img4 = Def.iFDCT3(img4)
             img4 += 128*np.ones((8,8))
             img3[i][j] = img4
             img3[i][j] = np.clip(img3[i][j],0,255)
             
     return img3
-
+start = time.time()
 abc = encode(img)
+
 #print(abc)
 bcd = decode(abc)
-
+end = time.time()
+print(format(end-start))
 
 g = 32
 img_merge = [[0 for k1 in range(8)] for k2 in range(32)]
@@ -153,8 +152,5 @@ img_merge1 = img_merge1.astype(np.uint8)
 img_merge1=img_merge1.reshape(rows, cols, channels)
 cv2.imshow('temp', img_merge1)
 cv2.waitKey(0) 
-
-end = time.time()
-print(format(end-start))
 
 

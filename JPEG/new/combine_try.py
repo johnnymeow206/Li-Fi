@@ -5,9 +5,8 @@ import cv2
 import Def
 import Def2
 import combine_main
-import FDCT_more
 import time
-import Huff_try
+import Def_for_Huff
 np.set_printoptions(threshold=np.inf)
 
 rows=256
@@ -26,7 +25,7 @@ inp_list = [[[[0 for k1 in range(w)] for k2 in range(w)] for k3 in range(w)] for
 img3 = [[[[0 for k1 in range(w)] for k2 in range(w)] for k3 in range(w)] for k4 in range(w)]
 temp02 = 0
         ###################################<<invHuffman>>##################################
-img5 = Huff_try.InvHuff1(abc)
+img5 = Def_for_Huff.InvHuff1(abc)
 o = 0
 #img3 = np.reshape(img3,[32,32])
 for i in range(w):
@@ -56,7 +55,7 @@ for i in range(w):
         #img4 = cv2.idct(img4)
         #img4 = FDCT.iFDCT_for_gray(img4)
         #img4 = Def.InvFDCT(img4)
-        img4 = FDCT_more.iFDCT3(img4)
+        img4 = Def.iFDCT3(img4)
         img4 += 128*np.ones((8,8))
         img3[i][j] = img4
         img3[i][j] = np.clip(img3[i][j],0,255)

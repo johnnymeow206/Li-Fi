@@ -3,7 +3,6 @@ from sympy import pi
 import cv2
 import Def
 import Def2
-import FDCT_more
 rows=256
 cols=256
 channels =1
@@ -38,7 +37,7 @@ for i in range(w):
         img4 = img4.astype(np.float32)
         img4 -= 128*np.ones((8,8))
         #img4 = cv2.dct(img4)
-        img4 = FDCT_more.FDCT3(img4)
+        img4 = Def.FDCT3(img4)
         img3[i][j] = img4
         img3[i][j] = Def.quan(img3[i][j])
         img3[i][j] = np.round_(img3[i][j],0)
@@ -90,7 +89,7 @@ for i in range(w):
         #img4 = cv2.idct(img4)
         #img4 = FDCT.iFDCT_for_gray(img4)
         #img4 = Def.InvFDCT(img4)
-        img4 = FDCT_more.iFDCT3(img4)
+        img4 = Def.iFDCT3(img4)
         img4 += 128*np.ones((8,8))
         img3[i][j] = img4
         img3[i][j] = np.clip(img3[i][j],0,255)
