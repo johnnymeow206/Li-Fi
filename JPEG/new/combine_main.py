@@ -7,18 +7,24 @@ import time
 import Def_for_Huff
 np.set_printoptions(threshold=np.inf)
 
-
+rows=512
+cols=512
+channels =1
+w = 64
+img = cv2.imread("lena_gray_512.tif",0)
+img=img.reshape(rows, cols, channels)
+'''
 rows=256
 cols=256
 channels =1
+w = 64
 i = 0
-w = 32
 t = 16
 
 img=np.fromfile(r'lena', dtype='uint8')
 img=img.reshape(rows, cols, channels)
-
-#cv2.imshow('temp', img)
+'''
+#cv2.imshow('image', img)
 #cv2.waitKey(0) 
 def encode(encode_img):
     img = np.transpose(encode_img) 
@@ -79,7 +85,7 @@ def decode(decode_img):
     #inp_list = decode_img
     #'''
             ###################################<<invHuffman>>##################################
-    img5 = Def_for_Huff.InvHuff1(decode_img)
+    img5 = Def_for_Huff.InvHuff1(decode_img, w)
     #img5 = Def2.InvHuff(decode_img)
     o = 0
     #img3 = np.reshape(img3,[32,32])
@@ -130,19 +136,19 @@ bcd = decode(abc)
 end = time.time()
 print(format(end-start))
 
-g = 32
-img_merge = [[0 for k1 in range(8)] for k2 in range(32)]
-for c in range(g):
+
+img_merge = [[0 for k1 in range(8)] for k2 in range(w)]
+for c in range(w):
     img_merge[c] = bcd[c][0]
     b = 1
-    for a in range(31):
+    for a in range(w-1):
         img_merge[c] = np.hstack((img_merge[c],bcd[c][b]))
         b+=1
 
 img_merge1 = img_merge[0]
 e = 0
 f = 1
-for d in range(31):
+for d in range(w-1):
     img_merge1 = np.vstack((img_merge1,img_merge[f]))
     e+=1 
     f+=1
