@@ -46,7 +46,7 @@ def Huff(array1):
     diff = temp[0]
     diff = int_to_bin(diff)
     if diff == 0:
-        temp[0] =  DC_Huff[0] + diff
+        temp[0] =  DC_Huff[0]
     else:
         temp[0] =  DC_Huff[len(diff)] + diff
     i = 1
@@ -101,10 +101,13 @@ def InvHuff(inp):   #整體運行
             TEMP00 = input1[now:now+9]
             diff_length = DC_check(TEMP00)
             now += len(DC_Huff[diff_length])
-            temp02 = input1[now:now+diff_length]
-            now += len(temp02)
-            temp02 = bin_to_int(temp02)
-            temp01.append(temp02)
+            if diff_length != 0:
+                temp02 = input1[now:now+diff_length]
+                now += len(temp02)
+                temp02 = bin_to_int(temp02)
+                temp01.append(temp02)
+            else:
+                temp01.append(0)
             ####################AC
             code_length = 1
             while code_length < 64:
