@@ -15,6 +15,7 @@ count = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
         31]
 
 
+
 img=np.fromfile(r'lena', dtype='uint8')
 img=img.reshape(rows, cols, channels)
 
@@ -22,6 +23,7 @@ img = np.transpose(img)
 img1 = np.split(img, w, axis=1)
 
 img3 = [[[[0 for k1 in range(w)] for k2 in range(w)] for k3 in range(w)] for k4 in range(w)]
+temp_list1 = [[[0 for k1 in range(w)] for k2 in range(w)] for k3 in range(w)]
 
 for i in range(w):
     img2 = np.dsplit(img1[i], w)
@@ -30,7 +32,7 @@ for i in range(w):
         img3[i][j] = img2[j]
 #img3 = resized_image.astype(np.float32)
 
-
+temp02 = 0
 for i in range(w):
     for j in range(w):
         img4 = np.asmatrix(img3[i][j])
@@ -46,16 +48,18 @@ for i in range(w):
                 img3[i][j][k][l] = round(img3[i][j][k][l])
 
         img3[i][j] = Def.zigzag(img3[i][j])
-        img3[i][j] = Def.RLE_AC(img3[i][j])
-        #print(img3[i][j])
 
-########DIFF
-temp02 = 0
-for i in range(w):
-    for j in range(w):
-        temp = img3[j][i][0] - temp02
-        temp02 = img3[j][i][0]
-        img3[j][i][0] = temp
+        temp = img3[i][j][0] - temp02
+        temp02 = img3[i][j][0]
+        img3[i][j][0] = temp
+        
+        img3[i][j] = Def.RLE_AC(img3[i][j])
+        
+        temp_list1[i][j] = img3[i][j]
+        
+        
+        #print(img3[i][j])
+        
 ########Huff+combin
 for i in range(w):
     for j in range(w):
@@ -64,16 +68,24 @@ for i in range(w):
 img3 = ''.join(img3)
 
 
-
-img3 = Def2.InvHuff(img3)
-img3 = np.reshape(img3,[32,32])
+output1 = Def2.InvHuff(img3)
+output1 = np.reshape(output1,[32,32])
 #######invDIFF(假設已排序好)    #有warning
-img3 = Def.invDiff(img3)
+w = 32
+temp02 = 0
+for i in range(w):
+    for j in range(w):
+        temp01 = output1[i][j][0] + temp02
+        output1[i][j][0] = temp01
+        temp02 = output1[i][j][0]
+        #Def.error_check(temp_list1[i][j], output1[i][j])
+'''
 ####inv RLE
 for i in range(w):
     for j in range(w):
         ###################################<<invRLE>>##################################
         img3[i][j] = Def.InvRLE_AC(img3[i][j])
+        
         
         ################################<<iZig-Zag>>#################################
         img3[i][j] = Def.izigzag(img3[i][j])
@@ -116,6 +128,7 @@ img_merge1=img_merge1.reshape(rows, cols, channels)
 
 cv2.imshow('temp', img_merge1)
 cv2.waitKey(0) 
+'''
 '''
 ########snake diff
 
