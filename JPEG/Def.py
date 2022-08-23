@@ -133,3 +133,9 @@ def invDiff(inp_list):
             inp[j][i][0] = temp01
             temp02 = inp[j][i][0]
     return inp
+
+
+def error_check(list1, list2):
+    for k in range(len(list1)):
+        if list1[k] != list2[k]:
+            print("出現錯誤, 原輸入{} ==> {}".format(list1[k], list2[k]))
