@@ -4,13 +4,13 @@ from math import cos, pi
 
 def quan(img):
     quan =np.array([[16,11,10,16,24,40,51,61],
-                [12,12,14,19,26,58,60,55],
-                [14,13,16,24,40,57,69,56],
-                [14,17,22,19,51,87,80,62],
-                [18,22,37,56,68,109,103,77],
-                [24,35,55,64,81,104,113,92],
-                [49,64,78,87,103,121,120,101],
-                [72,92,95,98,112,100,103,99]])
+                    [12,12,14,19,26,58,60,55],
+                    [14,13,16,24,40,57,69,56],
+                    [14,17,22,29,51,87,80,62],
+                    [18,22,37,56,68,109,103,77],
+                    [24,35,55,64,81,104,113,92],
+                    [49,64,78,87,103,121,120,101],
+                    [72,92,95,98,112,100,103,99]])
     quan = np.asmatrix(quan)
     for x in range(8):
         for y in range(8):
@@ -94,20 +94,16 @@ def InvRLE_AC(array1): #haven't check  now
     array3.extend([0]*(64 - len(array3)))
     return array3
 
-def FDCT(list_in):
-    list = list_in
-    list = np.reshape(list,(1,64))
+def FDCT(S):
     F = np.ones((8,8))
-    for u in range(8):
-        for  v in range(8):
-            if u == 0 and v == 0:
-                cucv = 1/2
-            else:
-                cucv = 1
-            Cx = np.asmatrix(np.array([cos(((2*x+1)*u*pi)/16) for x in range (8)]))
-            Cy = np.asmatrix(np.array([cos(((2*y+1)*v*pi)/16) for y in range (8)]))
-            C = np.reshape(np.transpose(Cx)*Cy,(64,1))
-            F[u,v] = 0.25*cucv*list*C
+    M = []
+    m0 = np.array([1/(2*math.sqrt(2)) for x in range (8)])
+    m1 = [[0 for k1 in range(8)] for k2 in range(7)]
+    for u0 in range(7):
+        u = u0+1
+        m1[u0] = np.array([0.5*math.cos(((2*v+1)*u*math.pi)/16) for v in range (8)])
+    M = np.asmatrix(np.vstack((m0,m1)))
+    F = M*S*np.transpose(M)
     return F
 
 def iFDCT(S1):
@@ -138,4 +134,4 @@ def invDiff(inp_list):
 def error_check(list1, list2):
     for k in range(len(list1)):
         if list1[k] != list2[k]:
-            print("出現錯誤, 原輸入{} ==> {}".format(list1[k], list2[k]))
+            print("出現錯誤, 原輸入{}位置{} ==> {}".format(list1[k], k, list2[k]))
