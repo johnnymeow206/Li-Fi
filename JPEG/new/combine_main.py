@@ -2,28 +2,28 @@ import numpy as np
 from sympy import pi
 import cv2
 import Def
-import Def2
 import time
 import Def_for_Huff
 np.set_printoptions(threshold=np.inf)
-
+'''
 rows=512
 cols=512
 channels =1
 w = 64
 img = cv2.imread("lena_gray_512.tif",0)
 img=img.reshape(rows, cols, channels)
-'''
+
 rows=256
 cols=256
 channels =1
-w = 64
+w = 32
 i = 0
 t = 16
 
 img=np.fromfile(r'lena', dtype='uint8')
 img=img.reshape(rows, cols, channels)
 '''
+w = 32
 #cv2.imshow('image', img)
 #cv2.waitKey(0) 
 def encode(encode_img):
@@ -128,15 +128,14 @@ def decode(decode_img):
             img3[i][j] = np.clip(img3[i][j],0,255)
             
     return img3
-start = time.time()
-abc = encode(img)
-
+#start = time.time()
+#abc = encode(img)
 #print(abc)
-bcd = decode(abc)
-end = time.time()
-print(format(end-start))
+#bcd = decode(abc)
+#end = time.time()
+#print(format(end-start))
 
-
+'''
 img_merge = [[0 for k1 in range(8)] for k2 in range(w)]
 for c in range(w):
     img_merge[c] = bcd[c][0]
@@ -159,4 +158,4 @@ img_merge1=img_merge1.reshape(rows, cols, channels)
 cv2.imshow('temp', img_merge1)
 cv2.waitKey(0) 
 
-
+'''
