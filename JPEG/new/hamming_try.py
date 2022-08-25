@@ -2,15 +2,20 @@
 p0 = p1 = p2 = 0
 d = 0
 m2 = []
-m = ['00110111']
+m = ['00110100']
 len_of_m = len(m[0])
 len_of_m1 = 0
+num_zero = 0
+bin_num_zero = ''
 while len_of_m != len_of_m1:
     m1 = [m[0][0+d:4+d]]
     len_of_m1 += len(m1[0])
     if len(m1[0]) != 4:
-        for b in range(4-len(m1[0])):
+        num_zero = 4-len(m1[0])#回傳補0位數並記錄
+        bin_num_zero = '{:b}'.format(num_zero)
+        for b in range(num_zero):
             m1.append('0')
+        m1.append(bin_num_zero)#讓decoder知道有補幾個0
         m1 = [''.join(m1)]
     if m1[0][0] == '1':
         p0 += 1
@@ -49,7 +54,7 @@ while len_of_m != len_of_m1:
     d += 4
 m2 = ''.join(m2)
 #print(m2)
-#  !!要補個偵測最後少於四個的標誌能讓decoder知道!!
+#  !!要補個偵測最後少於四個的標誌能讓decoder知道!!(完成)
 ###############decoder#################
 hamming_743code = ['0000000','0001101','0010111','0011010','0100011','0101110','0110100','0111001',
                    '1000110','1001011','1010001','1011100','1100101','1101000','1110010','1111111']
@@ -97,22 +102,32 @@ m3 = '1011010'
 TEMP00 = errorcheck(m3)
 print(TEMP00)
 '''
-m3 = '10110100111001'#假設第一位錯
+m3 = '0010111110010110'#假設第一位錯
 decode_m1 = m3
 decode_m2 = ['']
 now = 0
 len_m2 = 0.
 block_decode_m1 = len(decode_m1)/7
 block_decode_m2 = len_m2/4
+num_zero = 0
 while block_decode_m1 != block_decode_m2:
     TEMP00 = decode_m1[now:now+7]
-    TEMP00 = errorcheck(TEMP00)
-    decode_m2.append(hamming_check(TEMP00))
-    decode_m2 = [''.join(decode_m2)]
-    len_m2 = len(decode_m2[0])
-    block_decode_m2 = len_m2/4
-    now += 7
+    if len(TEMP00) == 7: 
+        TEMP00 = errorcheck(TEMP00)
+        #解不回來的if-else
+
+        decode_m2.append(hamming_check(TEMP00))
+        decode_m2 = [''.join(decode_m2)]
+        
+        len_m2 = len(decode_m2[0])
+        block_decode_m2 = len_m2/4
+        now += 7
+    else:   #根據最後回傳的補0位數切掉最後最後的0
+        num_zero = int(TEMP00, 2)
+        decode_m2[0] = decode_m2[0][:-num_zero]
+        block_decode_m1 = block_decode_m2
 print(decode_m2)
+
 '''
 de_m = m2
 block_de_m = len(de_m)/7
@@ -146,12 +161,4 @@ while block_de_m != block_de_m1:
     de_m1.append(temp_m1)
     de_m1 = [''.join(de_m1)]
     print(de_m1)
-
-
-
-
 '''
-
-
-
-
