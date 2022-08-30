@@ -1,8 +1,9 @@
 import numpy as np
 from sympy import pi
 import cv2
-import Def
 import Def2
+import hamming
+
 import time
 
 rows=256
@@ -20,13 +21,21 @@ count = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 img=np.fromfile(r'lena', dtype='uint8')
 img=img.reshape(rows, cols, channels)
 
-start = time.time()
 
+encode_start = time.time()
 abc = Def2.encode(img, w)
+abc = hamming.hamming_encoding(abc)
+encode_end = time.time()
 #print(abc)
+
+decode_start = time.time()
+abc = hamming.hamming_decoding(abc)
 bcd = Def2.decode(abc, w)
-end = time.time()
-print(format(end-start))
+decode_end = time.time()
+
+print("總運行時間:{}".format(decode_end - encode_start))
+print("encode運行時間:{}".format(encode_end - encode_start))
+print("decode運行時間:{}".format(decode_end - decode_start))
 
 
 img_merge = [[0 for k1 in range(8)] for k2 in range(w)]
