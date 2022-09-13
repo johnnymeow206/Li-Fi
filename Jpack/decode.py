@@ -40,8 +40,8 @@ def decode(decode_img):
           
             ##############################<<IQuantization>>###############################
             img5 = img3[i][j]
-            img5 = Def.iquan(img5)
-            #img5 = Def.iquan_try(img5,80)
+            #img5 = Def.iquan(img5)
+            img5 = Def.iquan_try(img5, 50)
             ###################################<<IDCT>>###################################
             img4 = np.asmatrix(img5)
             img4 = img4.astype(np.float32)

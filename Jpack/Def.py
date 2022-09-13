@@ -1,6 +1,6 @@
 import numpy as np
 import math
-from math import cos, pi
+from math import cos, pi, floor
 
 def FDCT3(S):
     F = np.ones((8,8))
@@ -28,8 +28,8 @@ def quan(img): #要改用陣列表示省掉一個迴圈
         for y in range(8):
             img[x,y] = img[x,y]/quan[x,y]
     return img
-'''
-def quan_try(img,Q): #要改用陣列表示省掉一個迴圈
+
+def quan_try(img,Q): 
     if Q<1:
         Q=1
     elif Q>99:
@@ -50,11 +50,18 @@ def quan_try(img,Q): #要改用陣列表示省掉一個迴圈
     quan = np.asmatrix(base_quan)
     for x in range(8):
         for y in range(8):
-            new_quan[x,y]=(quan[x,y]*S+50)/100
+            new_quan[x,y]=math.floor((quan[x,y]*S+50)/100)
             if new_quan[x,y]<1:
                 new_quan[x,y]=1
             img[x,y] = img[x,y]/new_quan[x,y]
     return img
+'''
+aa = np.ones((8,8))*100
+print(aa)
+bb = quan_try(aa, 63)
+print(bb)
+cc = np.round_(bb,0)
+print(cc)
 '''
 def zigzag(img):
     z = 0
@@ -141,8 +148,8 @@ def iquan(img):
         for y in range(8):
             img[x,y] = img[x,y]*iquan[x,y]
     return img
-'''
-def iquan_try(img,Q): #要改用陣列表示省掉一個迴圈
+
+def iquan_try(img,Q): 
     if Q<1:
         Q=1
     elif Q>99:
@@ -163,12 +170,12 @@ def iquan_try(img,Q): #要改用陣列表示省掉一個迴圈
     iquan = np.asmatrix(base_iquan)
     for x in range(8):
         for y in range(8):
-            new_iquan[x,y]=(iquan[x,y]*S+50)/100
+            new_iquan[x,y]=math.floor((iquan[x,y]*S+50)/100)
             if new_iquan[x,y]<1:
                 new_iquan[x,y]=1
             img[x,y] = img[x,y]*new_iquan[x,y]
     return img
-'''
+
 def iFDCT3(S1):
     f = np.ones((8,8))
     M = []
@@ -181,4 +188,9 @@ def iFDCT3(S1):
     f = np.transpose(M)*S1*M
     return f
 
+def error_check(list1, list2):
+    for k in range(32):
+        for h in range(32):
+            if list1[k][h] != list2[k][h]:
+                print("出現錯誤, 原輸入{}位置[{},{}] ==> {}".format(list1[k][h], k,h, list2[k][h]))
 

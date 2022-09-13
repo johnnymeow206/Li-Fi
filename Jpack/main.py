@@ -1,11 +1,10 @@
 import numpy as np
-#from sympy import pi
 import cv2
 import encode
 import decode
 import hamming
 import time
-
+'''
 w = 32
 count = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
         11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
@@ -14,7 +13,7 @@ count = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 rows = 256
 cols = 256
 channels = 1
-'''
+
 img=np.fromfile(r'lena', dtype='uint8')
 img=img.reshape(rows, cols, channels)
 '''
@@ -67,3 +66,4 @@ for i in range(w):
     else:
         count = sorted(count,reverse = True)
 '''
+

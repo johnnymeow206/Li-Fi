@@ -19,14 +19,14 @@ def encode(encode_img,h, w):
             img4 = Def.FDCT3(img4)
 
             img3[i][j] = img4
-            img3[i][j] = Def.quan(img3[i][j])
-            #img3[i][j] = Def.quan_try(img3[i][j], 80)
+            #img3[i][j] = Def.quan(img3[i][j])
+            img3[i][j] = Def.quan_try(img3[i][j], 50)
             
             img3[i][j] = np.round_(img3[i][j],0)
             img3[i][j] = Def.zigzag(img3[i][j])
 
             img3[i][j] = Def.RLE_AC(img3[i][j])
-            #print(img3[i][j])
+
     ######################DPCM#####################
             temp = img3[i][j][0] - temp02
             temp02 = img3[i][j][0]
