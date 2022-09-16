@@ -105,17 +105,22 @@ def InvRLE_AC(array1):
     array2 = array1
     array3 = [array2[0]]
     i = 1
-
-    while array2[i][0] != 'E':
+    code_length = 1
+    while code_length < 64:
         if array2[i] == [15,0]:
             array3.extend([0]*16)
+            code_length += 16
             i+=1
+        elif array2[i][0] == 'E':
+            array3.extend([0]*(64 - len(array3)))
+            code_length = 64
         else:
             array3.extend([0]*int(array2[i][0]))
+            code_length += int(array2[i][0])
             array3.append(array2[i][1])
+            code_length += 1
             i += 1
-    
-    array3.extend([0]*(64 - len(array3)))
+            
     return array3
 
 def izigzag(Z):
@@ -193,4 +198,146 @@ def error_check(list1, list2):
         for h in range(32):
             if list1[k][h] != list2[k][h]:
                 print("出現錯誤, 原輸入{}位置[{},{}] ==> {}".format(list1[k][h], k,h, list2[k][h]))
+
+def AAN_FDCT(v):
+    #vector = np.transpose(vector)
+    C = [math.cos(math.pi / 16 * i) for i in range(8)]
+    S = [1 / (4 * val) for val in C]
+    S[0] = 1 / (2 * math.sqrt(2))
+    A = [None,C[4],C[2] - C[6],C[4],C[6] + C[2],C[6]]
+    a0 = v[0] + v[7]
+    a1 = v[1] + v[6]
+    a2 = v[2] + v[5]
+    a3 = v[3] + v[4]
+    a4 = v[3] - v[4]
+    a5 = v[2] - v[5]
+    a6 = v[1] - v[6]
+    a7 = v[0] - v[7]
+	
+    b0 = a0 + a3
+    b1 = a1 + a2
+    b2 = a1 - a2
+    b3 = a0 - a3
+    b4 = -a4 - a5
+    b5 = (a5 + a6) * A[3]
+    b6 = a6 + a7
+
+    c0 = b0 + b1
+    c1 = b0 - b1
+    c2 = (b2 + b3) * A[1]
+    c3 = (b4 + b6) * A[5]
+
+    d4 = -b4 * A[2] - c3
+    d6 = b6 * A[4] - c3
+
+    e2 = c2 + b3
+    e3 = b3 - c2
+    e5 = b5 + a7
+    e7 = a7 - b5
+
+    f4 = d4 + e7
+    f5 = e5 + d6
+    f6 = e5 - d6
+    f7 = e7 - d4
+    matrix = [
+        S[0] * c0,
+        S[1] * f5,
+        S[2] * e2,
+        S[3] * f7,
+        S[4] * c1,
+        S[5] * f4,
+        S[6] * e3,
+        S[7] * f6
+    ]
+    matrix = np.vstack(matrix)
+    return matrix
+def AAN_INVFDCT(v):
+    #vector = np.transpose(vector)
+    C = [math.cos(math.pi / 16 * i) for i in range(8)]
+    S = [1 / (4 * val) for val in C]
+    S[0] = 1 / (2 * math.sqrt(2))
+    A = [None,C[4],C[2] - C[6],C[4],C[6] + C[2],C[6]]
+    c0 = v[0] / S[0]
+    f5 = v[1] / S[1]
+    e2 = v[2] / S[2]
+    f7 = v[3] / S[3]
+    c1 = v[4] / S[4]
+    f4 = v[5] / S[5]
+    e3 = v[6] / S[6]
+    f6 = v[7] / S[7]
+
+    d4 = (f4 - f7) / 2
+    d6 = (f5 - f6) / 2
+    e5 = (f5 + f6) / 2
+    e7 = (f4 + f7) / 2
+
+    a7  = (e5 + e7) / 2
+    b3 = (e2 + e3) / 2
+    b5 = (e5 - e7) / 2
+    c2 = (e2 - e3) / 2
+
+    b0 = (c0 + c1) / 2
+    b1 = (c0 - c1) / 2
+
+    c3 = (d4 - d6) * A[5]  # Different from original
+    b4 = (d4 * A[4] - c3) / (A[2] * A[5] - A[2] * A[4] - A[4] * A[5])
+    b6 = (c3 - d6 * A[2]) / (A[2] * A[5] - A[2] * A[4] - A[4] * A[5])
+
+    a6 = b6 - a7
+    a5 = b5 / A[3] - a6
+    a4 = -a5 - b4
+    b2 = c2 / A[1] - b3
+
+    a0 = (b0 + b3) / 2
+    a1 = (b1 + b2) / 2
+    a2 = (b1 - b2) / 2        
+    a3 = (b0 - b3) / 2         
+    imatrix = [
+        (a0 + a7) / 2,
+        (a1 + a6) / 2,
+        (a2 + a5) / 2,
+        (a3 + a4) / 2,
+        (a3 - a4) / 2,
+        (a2 - a5) / 2,
+        (a1 - a6) / 2,
+        (a0 - a7) / 2]
+    imatrix = np.vstack(imatrix)
+    return imatrix
+def true_FDCT(matrix):
+    temp_matrix = AAN_FDCT(matrix)
+    temp_matrix = np.transpose(temp_matrix)
+    temp2_matrix = AAN_FDCT(temp_matrix)
+    return temp2_matrix
+def true_INVFDCT(matrix):
+    temp_matrix = AAN_INVFDCT(matrix)
+    temp_matrix = np.transpose(temp_matrix)
+    temp2_matrix = AAN_INVFDCT(temp_matrix)
+    return temp2_matrix
+'''
+img4 = 255*np.ones((8,8))
+print(FDCT3(img4))
+aa = true_FDCT(img4)
+print(aa)
+bb = true_INVFDCT(aa)
+print(bb)
+'''
+def PSNR(new, old):
+    sum = 0
+    for i in range(32):
+        for j in range(32):
+            for k in range(8):
+                for l in range(8):
+                    old_element = old[i][j][0][k,l]
+                    new_element = new[i][j][k][0,l]
+                    diff = (new_element - old_element)**2
+                    sum += diff
+                    #print(i, j , k, l)
+    #print(sum)
+    MSE = sum/(256*256)
+    #print(MSE)
+    PSNR = 20*math.log10(255/math.sqrt(MSE))
+    
+    return PSNR
+
+
 

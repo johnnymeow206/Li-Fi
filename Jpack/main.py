@@ -4,6 +4,7 @@ import encode
 import decode
 import hamming
 import time
+
 '''
 w = 32
 count = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
@@ -17,8 +18,8 @@ channels = 1
 img=np.fromfile(r'lena', dtype='uint8')
 img=img.reshape(rows, cols, channels)
 '''
-img = cv2.imread("lena_color_256.tif",0)
-#img = cv2.imread("lena_gray_256.tif",0)
+#img = cv2.imread("lena_color_256.tif",0)
+img = cv2.imread("lena_gray_256.tif",0)
 img_shape = img.shape # 照片大小
 rows = img_shape[0]
 cols = img_shape[1]

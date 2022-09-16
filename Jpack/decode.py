@@ -45,10 +45,8 @@ def decode(decode_img):
             ###################################<<IDCT>>###################################
             img4 = np.asmatrix(img5)
             img4 = img4.astype(np.float32)
-            #img4 = cv2.idct(img4)
-            #img4 = FDCT.iFDCT_for_gray(img4)
-            #img4 = Def.InvFDCT(img4)
-            img4 = Def.iFDCT3(img4)
+            #img4 = Def.iFDCT3(img4)
+            img4 = Def.true_INVFDCT(img4)
             img4 += 128*np.ones((8,8))
             img3[i][j] = img4
             img3[i][j] = np.clip(img3[i][j],0,255)

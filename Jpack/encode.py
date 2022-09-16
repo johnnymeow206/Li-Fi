@@ -16,7 +16,8 @@ def encode(encode_img,h, w):
             img4 = np.asmatrix(img3[i][j])
             img4 = img4.astype(np.float32)
             img4 -= 128*np.ones((8,8))
-            img4 = Def.FDCT3(img4)
+            #img4 = Def.FDCT3(img4)
+            img4 = Def.true_FDCT(img4)
 
             img3[i][j] = img4
             #img3[i][j] = Def.quan(img3[i][j])
