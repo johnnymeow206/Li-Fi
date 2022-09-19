@@ -5,6 +5,9 @@ import cv2
 
 def decode(decode_img):
     hihi = Def2.ibin_huff(decode_img)
+    #hihi = Def2.ibin_huff_error(decode_img)
+    if hihi == "error":
+        return "cantfixit"
     img_shape = hihi[0]
     n = hihi[1]
     h = int(img_shape[0]/8) #高 切割數量
@@ -14,6 +17,9 @@ def decode(decode_img):
     temp02 = 0
             ###################################<<invHuffman>>##################################
     img5 = Def2.InvHuff(decode_img,h,w,n)
+    #img5 = Def2.InvHuff_error(decode_img,h,w,n)
+    if img5 == "error":
+        return "cantfixit"
 
     o = 0
     for i in range(h):
@@ -72,4 +78,5 @@ def combine_picture(img, h ,w ,rows, cols, channels): #組合並顯示圖片
     img_merge1 = img_merge1.astype(np.uint8)
     img_merge1=img_merge1.reshape(rows, cols, channels)
     cv2.imshow('temp', img_merge1)
+    #cv2.imwrite('compressed_pepper.png', img_merge1)
     cv2.waitKey(0) 

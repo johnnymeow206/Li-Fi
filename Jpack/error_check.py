@@ -7,6 +7,8 @@ import decode
 import matplotlib.pyplot as plt
 img = cv2.imread("lena_color_256.tif",0)
 #img = cv2.imread("lena_gray_256.tif",0)
+#cv2.imshow('Original picture', img)
+#cv2.waitKey(0) 
 img_shape = img.shape # 照片大小
 rows = img_shape[0]
 cols = img_shape[1]
@@ -20,7 +22,8 @@ img1 = np.split(img, h, axis=1) #水平切
 img3 = [[[[0 for k1 in range(w)] for k2 in range(w)] for k3 in range(w)] for k4 in range(w)]
 #inp_list = [[[[0 for k1 in range(w)] for k2 in range(w)] for k3 in range(w)] for k4 in range(w)]
 #temp02 = 0
-Q = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 99] 
+Q = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 99]
+#Q = [5]
 PSNR = []
 for i in range(w):#每一片水平的再縱切
     img2 = np.dsplit(img1[i], w)
@@ -52,13 +55,15 @@ for q in range(len(Q)):
             img3[i][j] = np.clip(img3[i][j],0,255)
     PSNR.append(Def.PSNR(img3, old))
     print(PSNR)
+
 lines = plt.plot(Q,PSNR)
-plt.title("PSNR to Q factor") # title
+plt.title("PSNR versus Quantization factor")
 plt.ylabel("PSNR") # y label
 plt.xlabel("Quantization factor") # x label
 plt.grid(True)
 plt.setp(lines,marker = "o") 
 plt.show()
+
 #decode.combine_picture(img3,h ,w ,rows, cols, channels)
 '''
 print(img3[1][1])

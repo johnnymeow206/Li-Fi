@@ -1,7 +1,7 @@
 import numpy as np
 import math
 from math import cos, pi, floor
-
+import random
 def FDCT3(S):
     F = np.ones((8,8))
     M = []
@@ -340,4 +340,15 @@ def PSNR(new, old):
     return PSNR
 
 
+def NoiseChannel(inp_array, ErrorRate):  #(要產生錯誤的陣列, 錯誤率[百分比%])
+    inp_array = list(inp_array)
+    for i in range(len(inp_array)):
+        dice = random.uniform(0, 100)
+        if dice <= ErrorRate:
+            if inp_array[i] == '1':
+                inp_array[i] = '0'
+            else:
+                inp_array[i] = '1'
+    inp_array = ''.join(inp_array)
+    return inp_array
 

@@ -185,8 +185,7 @@ def InvHuff(inp,h,w,n):   #整體運行
             #print(temp01)        
             out_list.append(temp01) 
     return out_list
-
-
+'''
 def InvHuff_test(inp):   #整體運行
     #piece_size = h*w
     now = 0
@@ -237,9 +236,6 @@ def InvHuff_test(inp):   #整體運行
     out_list.append(temp01)     
     return out_list
 
-
-
-
 #print(InvHuff_test('1101010011111111001111111110011111111100111111111111010110'))
 #'110 10100  11111111001  11111111001  11111111001  1111111111101011'
 #[-7, [1, 2], [0,-2], [0, -1], [0, -3], [0, 1], [1, -2], [0, 2], [1, -1], [0, -1], [6 ,1], [0, -1], [2, 1], 'EOB']
@@ -249,3 +245,93 @@ def InvHuff_test(inp):   #整體運行
 #print(InvHuff_test('101100010111001100101000100010101101101000101011010001011001000011000011000001110000111100101100101100100011000000001101001000011111101001110101110001111010000011111111001000'))
 #4 25
 #'10001000111110001000110011011011101000011000101011001000110011100010000111000111001000110111011011000010110111101111100100011001001111111010110'
+'''
+def bin_to_int_error(list1):
+    if list1[0] != '0':
+        list1 = int(list1, 2)
+    else:
+        list1 = ''.join('1' if x == '0' else '0' for x in list1)
+        list1 = int(list1, 2)
+        list1 *= -1
+    return list1
+def ibin_huff_error(input1):
+    now = 0
+    temp01 = []
+    for a in range(2):
+        TEMP00 = input1[now:now+9]
+        diff_length = DC_check(TEMP00)
+        if diff_length != None: 
+            if DC_Huff[diff_length] == None: 
+                return "error"
+            now += len(DC_Huff[diff_length])
+            temp02 = input1[now:now+diff_length]
+            now += len(temp02)
+            if temp02 == None: 
+                return "error"            
+            temp02 = bin_to_int_error(temp02)
+            temp01.append(temp02)
+        else :
+            return "error"
+    return temp01, now
+def InvHuff_error(inp,h,w,n):   #整體運行
+    #piece_size = h*w
+    now = n
+    input1 = inp
+    out_list = []
+    #for i in range(piece_size):
+    for i in range(h):
+        for j in range(w):
+            temp01 = []
+            ##################DC
+            TEMP00 = input1[now:now+9]
+            if TEMP00 != '':
+                diff_length = DC_check(TEMP00)
+                #print(i)
+                #print(TEMP00)
+                if diff_length == None:
+                    return "error" 
+                if DC_Huff[diff_length] == None:
+                    return "error"
+                now += len(DC_Huff[diff_length])
+                if diff_length == 0:
+                    temp01.append(0)
+                else:
+                    temp02 = input1[now:now+diff_length]
+                    now += len(temp02)
+                    temp02 = bin_to_int(temp02)
+                    temp01.append(temp02)
+                #print(now- tttt)
+                ####################AC
+                code_length = 1
+                while code_length < 64:
+                    TEMP00 = input1[now:now+16]
+                    zero_and_length = AC_check(TEMP00) 
+                    if zero_and_length == None:
+                        return "error"
+                    if iRLE_code[zero_and_length][0] == None:
+                        return "error" 
+                    #print(TEMP00)
+                    #print(zero_and_length)
+                    if zero_and_length == 3:
+                        code_length = 64
+                        temp01.append('EOB')
+                        now += 4
+                    elif zero_and_length == 31:
+                        code_length += 16
+                        temp01.append([15,0])
+                        now += 11
+                    else:
+                        code_length += (iRLE_code[zero_and_length][0])
+                        now += len(iAC_Huff[zero_and_length])
+                        temp02 = input1[now:now+iRLE_code[zero_and_length][1]]
+                        now += len(temp02)
+                        temp02 = bin_to_int(temp02)
+                        code_length += 1
+                        temp02 = [iRLE_code[zero_and_length][0], temp02]
+                        temp01.append(temp02)
+                #print(i,j)
+                #print(temp01) 
+            else :
+                return "error"
+            out_list.append(temp01) 
+    return out_list
