@@ -5,6 +5,9 @@ import cv2
 
 def decode(decode_img):
     hihi = Def2.ibin_huff(decode_img)
+    #hihi = Def2.ibin_huff_error(decode_img)
+    if hihi == "error":
+        return "cantfixit"
     img_shape = hihi[0]
     n = hihi[1]
     h = int(img_shape[0]/8) #高 切割數量
@@ -14,6 +17,9 @@ def decode(decode_img):
     temp02 = 0
             ###################################<<invHuffman>>##################################
     img5 = Def2.InvHuff(decode_img,h,w,n)
+    #img5 = Def2.InvHuff_error(decode_img,h,w,n)
+    if img5 == "error":
+        return "cantfixit"
 
     o = 0
     for i in range(h):
@@ -40,15 +46,13 @@ def decode(decode_img):
           
             ##############################<<IQuantization>>###############################
             img5 = img3[i][j]
-            img5 = Def.iquan(img5)
-            #img5 = Def.iquan_try(img5,80)
+            #img5 = Def.iquan(img5)
+            img5 = Def.iquan_try(img5, 50)
             ###################################<<IDCT>>###################################
             img4 = np.asmatrix(img5)
             img4 = img4.astype(np.float32)
-            #img4 = cv2.idct(img4)
-            #img4 = FDCT.iFDCT_for_gray(img4)
-            #img4 = Def.InvFDCT(img4)
-            img4 = Def.iFDCT3(img4)
+            #img4 = Def.iFDCT3(img4)
+            img4 = Def.true_INVFDCT(img4)
             img4 += 128*np.ones((8,8))
             img3[i][j] = img4
             img3[i][j] = np.clip(img3[i][j],0,255)
@@ -74,4 +78,5 @@ def combine_picture(img, h ,w ,rows, cols, channels): #組合並顯示圖片
     img_merge1 = img_merge1.astype(np.uint8)
     img_merge1=img_merge1.reshape(rows, cols, channels)
     cv2.imshow('temp', img_merge1)
+    #cv2.imwrite('compressed_pepper.png', img_merge1)
     cv2.waitKey(0) 
